@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { gsap, shouldReduceMotion } from "@/components/home/animation";
+import { gsap, ScrollTrigger, shouldReduceMotion } from "@/components/home/animation";
 import { Hero } from "@/components/home/Hero";
 import { Services } from "@/components/home/Initiatives";
 import { Newsletter } from "@/components/home/Newsletter";
@@ -32,36 +32,37 @@ export function HomePage() {
         trigger: string,
         vars: RevealOptions = {}
       ) => {
-        gsap.fromTo(
-          selector,
-          {
-            autoAlpha: 0,
-            y: 22,
-            scale: 0.985,
-            ...vars.from
-          },
-          {
-            autoAlpha: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.58,
-            ease: "power3.out",
-            stagger: 0.065,
-            overwrite: "auto",
-            ...vars.to,
-            scrollTrigger: {
-              trigger,
-              start: "top 88%",
-              once: true,
-              ...vars.scrollTrigger
-            }
+        ScrollTrigger.batch(gsap.utils.toArray(selector), {
+          start: "top 90%",
+          once: true,
+          ...vars.scrollTrigger,
+          onEnter: (batch) => {
+            gsap.fromTo(
+              batch,
+              {
+                autoAlpha: 0,
+                y: 18,
+                scale: 0.99,
+                ...vars.from
+              },
+              {
+                autoAlpha: 1,
+                y: 0,
+                scale: 1,
+                duration: 0.38,
+                ease: "power3.out",
+                stagger: 0.035,
+                overwrite: "auto",
+                ...vars.to
+              }
+            );
           }
-        );
+        });
       };
 
       reveal(".proof-logo-card", ".proof-section", {
         from: { y: 14, scale: 0.96 },
-        to: { duration: 0.44, stagger: 0.035 }
+        to: { duration: 0.28, stagger: 0.02 }
       });
 
       reveal(".tourism-destinations-section .section-label, .tourism-destinations-section h2, .tourism-destinations-section p", ".tourism-destinations-section", {
@@ -71,12 +72,12 @@ export function HomePage() {
 
       reveal(".dest-grid-card", ".destinations-masonry-grid", {
         from: { y: 28, scale: 0.96 },
-        to: { stagger: 0.08 }
+        to: { stagger: 0.04 }
       });
 
       reveal(".omra-section .placeholder-intro, .omra-section .placeholder-card", ".omra-section", {
         from: { y: 24, scale: 0.98 },
-        to: { stagger: 0.08 }
+        to: { stagger: 0.04 }
       });
 
       reveal(".initiatives-heading > *, .initiatives-media", ".services-section", {

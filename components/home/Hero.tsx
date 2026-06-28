@@ -44,36 +44,36 @@ export function Hero() {
 
       timeline
         .add("hero-in")
-        .to(".hero-eyebrow", { opacity: 1, y: 0, duration: 0.36 }, "hero-in")
-        .to(".split-line-inner", { yPercent: 0, duration: 0.64, stagger: 0.055 }, "hero-in+=0.04")
-        .to(".hero-copy > p:not(.hero-eyebrow)", { opacity: 1, y: 0, duration: 0.42 }, "hero-in+=0.18")
-        .to(".hero-buttons > *", { opacity: 1, y: 0, duration: 0.42, stagger: 0.055 }, "hero-in+=0.25")
-        .to(".collage", { opacity: 1, duration: 0.28 }, "hero-in+=0.02")
+        .to(".hero-eyebrow", { opacity: 1, y: 0, duration: 0.22 }, "hero-in")
+        .to(".split-line-inner", { yPercent: 0, duration: 0.42, stagger: 0.028 }, "hero-in+=0.02")
+        .to(".hero-copy > p:not(.hero-eyebrow)", { opacity: 1, y: 0, duration: 0.28 }, "hero-in+=0.12")
+        .to(".hero-buttons > *", { opacity: 1, y: 0, duration: 0.28, stagger: 0.035 }, "hero-in+=0.16")
+        .to(".collage", { opacity: 1, duration: 0.18 }, "hero-in")
         .to(".col-img", {
           opacity: 1,
           scale: 1,
           y: 0,
           rotate: (index: number) => [-2, 2.5, -1.5, 1.8][index] ?? 0,
-          duration: 0.72,
+          duration: 0.48,
           stagger: {
-            each: 0.055,
+            each: 0.035,
             from: "center"
           }
-        }, "hero-in+=0.06")
+        }, "hero-in+=0.02")
         .to(".chip", {
           opacity: 1,
           scale: 1,
           y: 0,
-          duration: 0.46,
-          stagger: 0.05
-        }, "hero-in+=0.32");
+          duration: 0.28,
+          stagger: 0.035
+        }, "hero-in+=0.2");
 
       if (planePath) {
-        timeline.to(planePath, { strokeDashoffset: 0, duration: 0.8, ease: "power2.out" }, "hero-in+=0.24");
+        timeline.to(planePath, { strokeDashoffset: 0, duration: 0.46, ease: "power2.out" }, "hero-in+=0.14");
       }
 
       if (planeText) {
-        timeline.to(planeText, { opacity: 1, x: 0, duration: 0.36 }, "hero-in+=0.56");
+        timeline.to(planeText, { opacity: 1, x: 0, duration: 0.24 }, "hero-in+=0.38");
       }
     }, heroRef);
 

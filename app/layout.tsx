@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { SiteInteractions } from "@/components/SiteInteractions";
 import "./globals.css";
 import "./styles/travel-pages.css";
 import "./styles/tourism-destinations.css";
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <Header />
         <main>{children}</main>
         <Footer />
+        <SiteInteractions />
       </body>
     </html>
   );
