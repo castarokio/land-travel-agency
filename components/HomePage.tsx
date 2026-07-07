@@ -1,4 +1,5 @@
 import { Hero } from "@/components/home/Hero";
+import { HomeTextSplit } from "@/components/home/HomeTextSplit";
 import { Services } from "@/components/home/Initiatives";
 import { Newsletter } from "@/components/home/Newsletter";
 import {
@@ -13,6 +14,7 @@ import { Testimonials } from "@/components/home/Testimonials";
 export function HomePage() {
   return (
     <>
+      <HomeTextSplit />
       <Hero />
       <Proof />
       <Services />

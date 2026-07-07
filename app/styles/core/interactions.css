@@ -26,4 +26,22 @@
   transform: translateY(-3px);
 }
 
+.text-line-split {
+  white-space: normal;
+}
+
+.text-line-measure {
+  display: inline;
+}
+
+.text-line-mask {
+  display: block;
+  overflow: hidden;
+}
+
+.text-line-inner {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
 
