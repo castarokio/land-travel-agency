@@ -36,6 +36,27 @@
 
   .hero-grid {
     min-height: 0;
+    gap: 48px;
+  }
+
+  .hero-stack {
+    justify-self: start;
+    min-height: 430px;
+    max-width: 520px;
+  }
+
+  .hero-intent-panel {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+  }
+
+  .hero-intent-panel div {
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  }
+
+  .hero-intent-panel a {
+    min-height: 52px;
   }
 
   .services-grid-layout {
@@ -125,7 +146,51 @@
   }
 
   .hero-copy h1 {
-    font-size: 36px;
+    font-size: clamp(39px, 11vw, 46px);
+    line-height: 0.96;
+  }
+
+  .hero-section {
+    min-height: auto;
+    padding-top: 72px;
+  }
+
+  .hero-copy p {
+    font-size: 15px;
+    line-height: 1.48;
+  }
+
+  .hero-stack {
+    min-height: 320px;
+    max-width: 100%;
+  }
+
+  .hero-stack-card.a {
+    left: 0;
+    width: 60%;
+    height: 64%;
+  }
+
+  .hero-stack-card.b {
+    width: 46%;
+    height: 34%;
+  }
+
+  .hero-stack-card.c {
+    right: 0;
+    bottom: 20%;
+    width: 48%;
+    height: 40%;
+  }
+
+  .hero-stack-card.d {
+    left: 16%;
+    width: 62%;
+    height: 32%;
+  }
+
+  .hero-intent-panel div {
+    padding: 16px;
   }
 
   .initiatives-heading h2,

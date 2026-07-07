@@ -28,10 +28,24 @@ const travelBodoni = localFont({
   weight: "400"
 });
 
+const travelArgent = localFont({
+  src: "../public/fonts/Argent-Regular.woff",
+  variable: "--font-travel-argent",
+  display: "swap",
+  weight: "400"
+});
+
+const travelBernSans = localFont({
+  src: "../public/fonts/BernSansCT-Regular.otf",
+  variable: "--font-travel-bern",
+  display: "swap",
+  weight: "400"
+});
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="fr">
-      <body className={`${travelFutura.variable} ${travelBodoni.variable}`}>
+      <body className={`${travelFutura.variable} ${travelBodoni.variable} ${travelArgent.variable} ${travelBernSans.variable}`}>
         <Header />
         <main>{children}</main>
         <Footer />

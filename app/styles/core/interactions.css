@@ -44,4 +44,8 @@
   will-change: transform, opacity;
 }
 
+.split-line-inner {
+  white-space: nowrap;
+}
+
 
