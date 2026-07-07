@@ -43,14 +43,14 @@
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 0.98fr) minmax(420px, 0.9fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
   min-height: 0;
-  gap: clamp(40px, 7vw, 86px);
+  gap: clamp(32px, 5vw, 64px);
 }
 
 .hero-copy {
-  max-width: 720px;
+  max-width: 820px;
 }
 
 .hero-copy h1 {
@@ -173,100 +173,9 @@
   background: #fff;
 }
 
-.hero-stack {
-  position: relative;
-  width: 100%;
-  min-height: 520px;
-  max-width: 560px;
-  justify-self: end;
-  will-change: opacity, transform;
-}
-
-.hero-stack-card {
-  position: absolute;
-  overflow: hidden;
-  border-radius: 8px;
-  box-shadow: 0 34px 90px rgba(0, 0, 0, 0.34);
-  border: 1px solid rgba(255, 255, 255, 0.32);
-  background: #0d1420;
-  will-change: transform, opacity;
-}
-
-.hero-stack-card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.hero-stack-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 48%, rgba(0, 0, 0, 0.72));
-}
-
-.hero-stack-card span {
-  position: absolute;
-  left: 18px;
-  bottom: 16px;
-  z-index: 1;
-  color: #fff;
-  font-family: var(--font-strong);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.hero-stack-card.a {
-  top: 9%;
-  left: 3%;
-  width: 58%;
-  height: 68%;
-  z-index: 2;
-  transform: rotate(-4deg);
-}
-
-.hero-stack-card.b {
-  top: 0;
-  right: 1%;
-  width: 45%;
-  height: 36%;
-  z-index: 4;
-  transform: rotate(5deg);
-}
-
-.hero-stack-card.c {
-  right: -2%;
-  bottom: 18%;
-  width: 47%;
-  height: 42%;
-  z-index: 5;
-  transform: rotate(-2deg);
-}
-
-.hero-stack-card.d {
-  left: 20%;
-  bottom: 0;
-  width: 56%;
-  height: 34%;
-  z-index: 6;
-  transform: rotate(3deg);
-}
-
-.hero-stack-card:hover {
-  transform: translateY(-8px) rotate(0deg) scale(1.015);
-}
-
-.hero-stack-card,
-.hero-stack-card:hover {
-  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
 .hero-intent-panel,
 .hero-buttons,
-.hero-eyebrow,
-.hero-stack {
+.hero-eyebrow {
   will-change: transform, opacity;
 }
 
