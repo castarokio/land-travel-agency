@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { gsap, ScrollTrigger, shouldReduceMotion } from "@/components/home/animation";
+import { gsap, shouldReduceMotion } from "@/components/home/animation";
 
 const buttonSelector = [
   ".button",
@@ -28,18 +28,6 @@ const surfaceSelector = [
   ".dest-related-card",
   ".proof-logo-card",
   ".testimonial-switcher button"
-].join(",");
-
-const revealSelector = [
-  ".utility-card",
-  ".service-hero-content > *",
-  ".package-card",
-  ".tour-card",
-  ".omra-package-card",
-  ".ziyarat-card",
-  ".dest-hero-section .container > *",
-  ".dest-content-section > *",
-  ".dest-related-card"
 ].join(",");
 
 function bindHover(
@@ -80,7 +68,6 @@ export function SiteInteractions() {
     const context = gsap.context(() => {
       const buttons = gsap.utils.toArray<Element>(buttonSelector);
       const surfaces = gsap.utils.toArray<Element>(surfaceSelector);
-      const revealItems = gsap.utils.toArray<Element>(revealSelector);
 
       gsap.set([...buttons, ...surfaces], {
         transformOrigin: "50% 50%",
@@ -99,26 +86,6 @@ export function SiteInteractions() {
           { y: 0, scale: 1, duration: 0.24, ease: "power2.out" }
         )
       ];
-
-      ScrollTrigger.batch(revealItems, {
-        start: "top 94%",
-        once: true,
-        onEnter: (batch) => {
-          gsap.fromTo(
-            batch,
-            { autoAlpha: 0, y: 20, scale: 0.985 },
-            {
-              autoAlpha: 1,
-              y: 0,
-              scale: 1,
-              duration: 0.42,
-              stagger: 0.035,
-              ease: "power3.out",
-              overwrite: "auto"
-            }
-          );
-        }
-      });
 
       return () => cleanups.forEach((cleanup) => cleanup());
     });

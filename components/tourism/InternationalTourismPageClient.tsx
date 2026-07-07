@@ -5,12 +5,13 @@ import Image from "next/image";
 import { useState } from "react";
 import { ArrowLeft, Award, Check, Plane, Send, ShieldCheck, Star } from "lucide-react";
 import { MotionPageShell } from "@/components/MotionPageShell";
+import { useInquiryForm } from "@/components/inquiry/useInquiryForm";
 import { asset, intlPackages } from "@/lib/site-data";
 
 export default function InternationalTourismPageClient() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [selectedPkg, setSelectedPkg] = useState(intlPackages[0].id);
-  const [formData, setFormData] = useState({
+  const { formData, handleSubmit, setField, setSubmitted, submitted } = useInquiryForm({
     name: "",
     email: "",
     phone: "",
@@ -18,22 +19,12 @@ export default function InternationalTourismPageClient() {
     date: "",
     notes: ""
   });
-  const [submitted, setSubmitted] = useState(false);
 
   const categories = ["All", "Europe", "Asia", "Tropical", "Adventure"];
 
   const filteredPackages = activeCategory === "All" 
     ? intlPackages 
     : intlPackages.filter(p => p.category === activeCategory);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name || !formData.email || !formData.phone) {
-      alert("Veuillez remplir tous les champs obligatoires (Nom, Email, Téléphone).");
-      return;
-    }
-    setSubmitted(true);
-  };
 
   const handleSelectPkg = (pkgId: string) => {
     setSelectedPkg(pkgId);
@@ -176,7 +167,7 @@ export default function InternationalTourismPageClient() {
                         id="name" 
                         required 
                         value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        onChange={(e) => setField("name", e.target.value)}
                         placeholder="Alice Martin" 
                       />
                     </div>
@@ -187,7 +178,7 @@ export default function InternationalTourismPageClient() {
                         id="email" 
                         required 
                         value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                        onChange={(e) => setField("email", e.target.value)}
                         placeholder="alice.martin@example.com" 
                       />
                     </div>
@@ -201,7 +192,7 @@ export default function InternationalTourismPageClient() {
                         id="phone" 
                         required 
                         value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                        onChange={(e) => setField("phone", e.target.value)}
                         placeholder="+33 7 98 76 54 32" 
                       />
                     </div>
@@ -225,7 +216,7 @@ export default function InternationalTourismPageClient() {
                       <select 
                         id="travelers"
                         value={formData.travelers}
-                        onChange={(e) => setFormData({...formData, travelers: e.target.value})}
+                        onChange={(e) => setField("travelers", e.target.value)}
                       >
                         <option value="1">1 Personne</option>
                         <option value="2">2 Personnes (Couple)</option>
@@ -239,7 +230,7 @@ export default function InternationalTourismPageClient() {
                         type="date" 
                         id="date" 
                         value={formData.date}
-                        onChange={(e) => setFormData({...formData, date: e.target.value})}
+                        onChange={(e) => setField("date", e.target.value)}
                       />
                     </div>
                   </div>
@@ -250,7 +241,7 @@ export default function InternationalTourismPageClient() {
                       id="notes" 
                       rows={3} 
                       value={formData.notes}
-                      onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                      onChange={(e) => setField("notes", e.target.value)}
                       placeholder="Ex: lit double requis, hôtel vue mer ou centre-ville, préférence de vol direct..."
                     />
                   </div>

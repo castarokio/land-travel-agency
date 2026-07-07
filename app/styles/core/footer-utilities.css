@@ -1,0 +1,135 @@
+.footer {
+  padding: 54px 0 62px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr repeat(3, 1fr);
+  gap: 62px;
+  align-items: flex-start;
+}
+
+.footer h3 {
+  margin: 0 0 20px;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.footer a,
+.footer p {
+  display: block;
+  margin: 0 0 12px;
+  color: #373737;
+  font-size: 11px;
+  line-height: 1.55;
+  font-weight: 500;
+}
+
+.footer a {
+  position: relative;
+  width: fit-content;
+  transition: color 160ms ease, transform 160ms ease;
+}
+
+.footer a:hover {
+  color: var(--primary);
+  transform: translateX(3px);
+}
+
+.footer-brand p {
+  max-width: 220px;
+  margin-top: 18px;
+}
+
+.socials {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.socials a {
+  color: var(--primary);
+}
+
+.contact-line {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+}
+
+.utility-page {
+  min-height: 58vh;
+  padding: 96px 0;
+  background:
+    radial-gradient(circle at 16% 8%, rgba(255, 216, 77, 0.25), transparent 24%),
+    #fff;
+}
+
+.utility-card {
+  max-width: 760px;
+}
+
+.utility-card h1 {
+  margin: 0 0 18px;
+  font-size: clamp(38px, 5vw, 58px);
+  line-height: 1.06;
+  font-weight: 900;
+}
+
+.utility-card p {
+  max-width: 620px;
+  margin: 0 0 28px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.utility-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.service-page-shell {
+  min-height: 64vh;
+}
+
+.tourism-page-shell {
+  background:
+    radial-gradient(circle at 16% 10%, rgba(0, 82, 204, 0.14), transparent 25%),
+    radial-gradient(circle at 82% 22%, rgba(245, 164, 0, 0.18), transparent 24%),
+    #fff;
+}
+
+.local-tourism-page-shell {
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255, 216, 77, 0.25), transparent 26%),
+    radial-gradient(circle at 80% 28%, rgba(0, 82, 204, 0.09), transparent 24%),
+    #fff;
+}
+
+.international-tourism-page-shell {
+  background:
+    radial-gradient(circle at 18% 12%, rgba(183, 74, 168, 0.12), transparent 27%),
+    radial-gradient(circle at 82% 28%, rgba(0, 82, 204, 0.12), transparent 25%),
+    #fff;
+}
+
+.omra-page-shell {
+  background:
+    radial-gradient(circle at 16% 10%, rgba(245, 164, 0, 0.18), transparent 26%),
+    radial-gradient(circle at 82% 22%, rgba(183, 74, 168, 0.1), transparent 24%),
+    #fff;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

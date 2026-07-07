@@ -1,0 +1,298 @@
+@media (max-width: 980px) {
+  .header-inner {
+    grid-template-columns: 1fr auto;
+  }
+
+  .desktop-nav,
+  .desktop-actions {
+    display: none;
+  }
+
+  .menu-button {
+    display: inline-grid;
+    place-items: center;
+  }
+
+  .mobile-menu {
+    display: grid;
+    gap: 16px;
+    padding: 10px 24px 24px;
+    border-top: 1px solid var(--border);
+    background: #fff;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .hero-grid,
+  .initiatives-layout,
+  .services-grid-layout,
+  .why-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-section {
+    padding-top: 54px;
+  }
+
+  .hero-grid {
+    min-height: 0;
+  }
+
+  .services-grid-layout {
+    gap: 40px;
+  }
+
+  .initiatives-layout {
+    gap: 44px;
+  }
+
+  .initiatives-media {
+    width: 100%;
+  }
+
+  .initiatives-media img {
+    height: 100%;
+  }
+
+  .services-cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .destination-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .placeholder-grid,
+  .placeholder-grid-compact {
+    grid-template-columns: 1fr;
+  }
+
+  .testimonial-switcher {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .services-progress-line {
+    left: 24px;
+    right: 24px;
+  }
+
+  .services-progress-grid {
+    width: max-content;
+    max-width: none;
+    grid-template-columns: repeat(var(--step-count), 156px);
+    gap: 22px;
+    overflow-x: auto;
+  }
+
+  .services-orbit {
+    min-height: 640px;
+  }
+
+  .service-orbit-card {
+    width: min(760px, 66vw);
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .service-orbit-card.left {
+    transform: translate(-126%, -50%) scale(0.76);
+  }
+
+  .service-orbit-card.right {
+    transform: translate(26%, -50%) scale(0.76);
+  }
+
+  .service-placeholder-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 850px) {
+  .services-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+}
+
+@media (max-width: 680px) {
+  .container {
+    width: min(100% - 32px, var(--container));
+  }
+
+  .hero-copy h1 {
+    font-size: 36px;
+  }
+
+  .initiatives-heading h2,
+  .services-page-hero h1 {
+    font-size: 38px;
+  }
+
+  .initiatives-media img {
+    height: 100%;
+  }
+
+  .initiative-trigger {
+    min-height: 82px;
+    padding: 0 4px;
+  }
+
+  .initiative-title {
+    gap: 12px;
+    font-size: 22px;
+  }
+
+  .initiative-panel {
+    padding: 0 6px 26px 44px;
+  }
+
+  .initiative-panel p {
+    font-size: 14px;
+  }
+
+  .services-page-hero {
+    padding: 58px 0 62px;
+  }
+
+  .services-progress {
+    padding: 20px 0 16px;
+    overflow-x: auto;
+  }
+
+  .services-progress-line {
+    top: 34px;
+    left: 16px;
+    right: 16px;
+  }
+
+  .services-progress-grid {
+    grid-template-columns: repeat(var(--step-count), 146px);
+    gap: 18px;
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .services-horizontal-scroll {
+    min-height: calc(var(--step-count) * 78vh);
+  }
+
+  .services-horizontal-sticky {
+    top: 66px;
+    min-height: calc(100vh - 66px);
+  }
+
+  .services-orbit {
+    min-height: 620px;
+  }
+
+  .service-orbit-card {
+    width: min(88vw, 460px);
+    top: 50%;
+  }
+
+  .service-orbit-card.left {
+    opacity: 0.32;
+    transform: translate(-132%, -50%) scale(0.72);
+  }
+
+  .service-orbit-card.right {
+    opacity: 0.32;
+    transform: translate(32%, -50%) scale(0.72);
+  }
+
+  .service-orbit-copy h2 {
+    font-size: 30px;
+  }
+
+  .service-orbit-image img {
+    height: 260px;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 12px;
+  }
+
+  .hero-buttons a {
+    width: 100%;
+  }
+
+  .section-space {
+    padding: 60px 0;
+  }
+
+  .destination-grid,
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .placeholder-card {
+    min-height: 170px;
+  }
+
+  .services-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .service-card-v2 {
+    padding: 22px;
+  }
+
+  .services-illustration-wrap {
+    margin: 20px auto 0;
+    max-width: 320px;
+  }
+
+  .section-heading-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .why-art {
+    min-height: 250px;
+  }
+
+  .testimonial-arrow {
+    position: static;
+    margin: 8px;
+  }
+
+  .testimonial-card {
+    margin-top: 28px;
+  }
+
+  .newsletter-card form {
+    flex-direction: column;
+  }
+
+  .newsletter-card label,
+  .newsletter-card .button {
+    width: 100%;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+}

@@ -3,13 +3,9 @@ import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
-  Calendar,
-  Check,
   ChevronRight,
   Compass,
-  GraduationCap,
   Landmark,
-  MapPin,
   Plane
 } from "lucide-react";
 import { asset, destinations, proofLogos, stats } from "@/lib/site-data";

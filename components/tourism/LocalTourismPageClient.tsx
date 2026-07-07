@@ -5,11 +5,12 @@ import Image from "next/image";
 import { useState } from "react";
 import { ArrowLeft, Award, Check, Compass, Phone, Send, Star } from "lucide-react";
 import { MotionPageShell } from "@/components/MotionPageShell";
+import { useInquiryForm } from "@/components/inquiry/useInquiryForm";
 import { asset, localTours } from "@/lib/site-data";
 
 export default function LocalTourismPageClient() {
   const [selectedTour, setSelectedTour] = useState(localTours[0].id);
-  const [formData, setFormData] = useState({
+  const { formData, handleSubmit, setField, setSubmitted, submitted } = useInquiryForm({
     name: "",
     email: "",
     phone: "",
@@ -17,16 +18,6 @@ export default function LocalTourismPageClient() {
     date: "",
     notes: ""
   });
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name || !formData.email || !formData.phone) {
-      alert("Veuillez remplir tous les champs obligatoires (Nom, Email, Téléphone).");
-      return;
-    }
-    setSubmitted(true);
-  };
 
   const handleSelectTour = (tourId: string) => {
     setSelectedTour(tourId);
@@ -146,7 +137,7 @@ export default function LocalTourismPageClient() {
                         id="name" 
                         required 
                         value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        onChange={(e) => setField("name", e.target.value)}
                         placeholder="Jean Dupont" 
                       />
                     </div>
@@ -157,7 +148,7 @@ export default function LocalTourismPageClient() {
                         id="email" 
                         required 
                         value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                        onChange={(e) => setField("email", e.target.value)}
                         placeholder="jean.dupont@example.com" 
                       />
                     </div>
@@ -171,7 +162,7 @@ export default function LocalTourismPageClient() {
                         id="phone" 
                         required 
                         value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                        onChange={(e) => setField("phone", e.target.value)}
                         placeholder="+33 6 12 34 56 78" 
                       />
                     </div>
@@ -195,7 +186,7 @@ export default function LocalTourismPageClient() {
                       <select 
                         id="travelers"
                         value={formData.travelers}
-                        onChange={(e) => setFormData({...formData, travelers: e.target.value})}
+                        onChange={(e) => setField("travelers", e.target.value)}
                       >
                         <option value="1">1 Personne</option>
                         <option value="2">2 Personnes</option>
@@ -209,7 +200,7 @@ export default function LocalTourismPageClient() {
                         type="date" 
                         id="date" 
                         value={formData.date}
-                        onChange={(e) => setFormData({...formData, date: e.target.value})}
+                        onChange={(e) => setField("date", e.target.value)}
                       />
                     </div>
                   </div>
@@ -220,7 +211,7 @@ export default function LocalTourismPageClient() {
                       id="notes" 
                       rows={4} 
                       value={formData.notes}
-                      onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                      onChange={(e) => setField("notes", e.target.value)}
                       placeholder="Ex: lit bébé nécessaire, allergies alimentaires, vol de nuit..."
                     />
                   </div>

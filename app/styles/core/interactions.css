@@ -1,0 +1,29 @@
+/* High-performance CSS Hover Interactions to replace Framer Motion */
+.brand-hover-container {
+  display: inline-block;
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.brand-hover-container:hover {
+  transform: translateY(-2px);
+}
+.brand-hover-container:active {
+  transform: scale(0.98);
+}
+
+.nav-item-hover {
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nav-item-hover:hover {
+  transform: translateY(-2px);
+}
+
+.footer-brand-hover,
+.footer-col-hover {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.footer-brand-hover:hover,
+.footer-col-hover:hover {
+  transform: translateY(-3px);
+}
+
+

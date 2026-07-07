@@ -1,25 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { ArrowLeft, ArrowRight, Star } from "lucide-react";
 import { testimonials } from "@/lib/site-data";
-import { gsap, shouldReduceMotion } from "@/components/home/animation";
 
 export function Testimonials() {
   const [index, setIndex] = useState(0);
   const testimonial = testimonials[index];
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!cardRef.current || shouldReduceMotion()) return;
-
-    gsap.fromTo(
-      cardRef.current,
-      { opacity: 0, y: 8 },
-      { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }
-    );
-  }, [index]);
 
   return (
     <section className="testimonial-section section-space">
@@ -36,7 +24,7 @@ export function Testimonials() {
           <ArrowLeft size={18} />
         </button>
 
-        <article className="testimonial-card" ref={cardRef}>
+        <article className="testimonial-card">
           <Image src={testimonial.avatar} width={96} height={96} alt={testimonial.name} loading="eager" />
           <h3>
             {testimonial.name} / {testimonial.place}
@@ -90,3 +78,4 @@ export function Testimonials() {
     </section>
   );
 }
+

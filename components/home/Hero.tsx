@@ -2,8 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useLayoutEffect, useRef } from "react";
-import { gsap, shouldReduceMotion } from "@/components/home/animation";
 import { SplitLine } from "@/components/home/SplitLine";
 import collageTravel from "../../public/assets/collage-travel.jpg";
 import collageUniversity from "../../public/assets/collage-university.jpg";
@@ -11,77 +9,8 @@ import collageStudent from "../../public/assets/collage-student.jpg";
 import collageOmra from "../../public/assets/collage-omra.jpg";
 
 export function Hero() {
-  const heroRef = useRef<HTMLElement>(null);
-
-  useLayoutEffect(() => {
-    if (!heroRef.current || shouldReduceMotion()) return;
-
-    const context = gsap.context(() => {
-      const planePath = heroRef.current?.querySelector(".plane-path path");
-      const planeText = heroRef.current?.querySelector(".plane-path text");
-
-      if (planePath instanceof SVGPathElement) {
-        const pathLength = planePath.getTotalLength();
-        gsap.set(planePath, {
-          strokeDasharray: pathLength,
-          strokeDashoffset: pathLength
-        });
-      }
-
-      gsap.set(".hero-eyebrow, .hero-copy > p:not(.hero-eyebrow), .hero-buttons > *, .collage, .col-img, .chip", {
-        opacity: 0
-      });
-      gsap.set(".split-line-inner", { yPercent: 104 });
-      gsap.set(".col-img", { scale: 0.94, y: 18, rotate: 0 });
-      gsap.set(".chip", { scale: 0.9, y: 10 });
-      if (planeText) {
-        gsap.set(planeText, { opacity: 0, x: -14 });
-      }
-
-      const timeline = gsap.timeline({
-        defaults: { ease: "power3.out" }
-      });
-
-      timeline
-        .add("hero-in")
-        .to(".hero-eyebrow", { opacity: 1, y: 0, duration: 0.22 }, "hero-in")
-        .to(".split-line-inner", { yPercent: 0, duration: 0.42, stagger: 0.028 }, "hero-in+=0.02")
-        .to(".hero-copy > p:not(.hero-eyebrow)", { opacity: 1, y: 0, duration: 0.28 }, "hero-in+=0.12")
-        .to(".hero-buttons > *", { opacity: 1, y: 0, duration: 0.28, stagger: 0.035 }, "hero-in+=0.16")
-        .to(".collage", { opacity: 1, duration: 0.18 }, "hero-in")
-        .to(".col-img", {
-          opacity: 1,
-          scale: 1,
-          y: 0,
-          rotate: (index: number) => [-2, 2.5, -1.5, 1.8][index] ?? 0,
-          duration: 0.48,
-          stagger: {
-            each: 0.035,
-            from: "center"
-          }
-        }, "hero-in+=0.02")
-        .to(".chip", {
-          opacity: 1,
-          scale: 1,
-          y: 0,
-          duration: 0.28,
-          stagger: 0.035
-        }, "hero-in+=0.2");
-
-      if (planePath) {
-        timeline.to(planePath, { strokeDashoffset: 0, duration: 0.46, ease: "power2.out" }, "hero-in+=0.14");
-      }
-
-      if (planeText) {
-        timeline.to(planeText, { opacity: 1, x: 0, duration: 0.24 }, "hero-in+=0.38");
-      }
-    }, heroRef);
-
-    return () => context.revert();
-  }, []);
-
   return (
-    <section className="hero-section" ref={heroRef}>
+    <section className="hero-section">
       <div className="container hero-grid">
         <div className="hero-copy">
           <p className="hero-eyebrow">{"Études • Voyages • Omra"}</p>
@@ -139,3 +68,4 @@ export function Hero() {
     </section>
   );
 }
+

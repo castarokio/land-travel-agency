@@ -5,11 +5,12 @@ import Image from "next/image";
 import { useState } from "react";
 import { ArrowLeft, Award, BookOpen, Check, Hotel, Send, ShieldCheck } from "lucide-react";
 import { MotionPageShell } from "@/components/MotionPageShell";
+import { useInquiryForm } from "@/components/inquiry/useInquiryForm";
 import { asset, omraPackages } from "@/lib/site-data";
 
 export default function OmraPageClient() {
   const [selectedFormula, setSelectedFormula] = useState(omraPackages[0].id);
-  const [formData, setFormData] = useState({
+  const { formData, handleSubmit, setField, setSubmitted, submitted } = useInquiryForm({
     name: "",
     email: "",
     phone: "",
@@ -17,7 +18,6 @@ export default function OmraPageClient() {
     departureMonth: "Octobre 2026",
     notes: ""
   });
-  const [submitted, setSubmitted] = useState(false);
 
   const ziyaratSites = [
     {
@@ -41,15 +41,6 @@ export default function OmraPageClient() {
       description: "La mosquée sacrée du Prophète (SWS) à Madinah, abritant sa sainte tombe et le Rawdah béni."
     }
   ];
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name || !formData.email || !formData.phone) {
-      alert("Veuillez remplir tous les champs obligatoires (Nom, Email, Téléphone).");
-      return;
-    }
-    setSubmitted(true);
-  };
 
   const handleSelectFormula = (formulaId: string) => {
     setSelectedFormula(formulaId);
@@ -223,7 +214,7 @@ export default function OmraPageClient() {
                         id="name" 
                         required 
                         value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        onChange={(e) => setField("name", e.target.value)}
                         placeholder="Youssef Alami" 
                       />
                     </div>
@@ -234,7 +225,7 @@ export default function OmraPageClient() {
                         id="email" 
                         required 
                         value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                        onChange={(e) => setField("email", e.target.value)}
                         placeholder="youssef.alami@example.com" 
                       />
                     </div>
@@ -248,7 +239,7 @@ export default function OmraPageClient() {
                         id="phone" 
                         required 
                         value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                        onChange={(e) => setField("phone", e.target.value)}
                         placeholder="+33 6 99 88 77 66" 
                       />
                     </div>
@@ -272,7 +263,7 @@ export default function OmraPageClient() {
                       <select 
                         id="pilgrims"
                         value={formData.pilgrims}
-                        onChange={(e) => setFormData({...formData, pilgrims: e.target.value})}
+                        onChange={(e) => setField("pilgrims", e.target.value)}
                       >
                         <option value="1">1 Personne</option>
                         <option value="2">2 Personnes (Chambre Double)</option>
@@ -285,7 +276,7 @@ export default function OmraPageClient() {
                       <select 
                         id="month"
                         value={formData.departureMonth}
-                        onChange={(e) => setFormData({...formData, departureMonth: e.target.value})}
+                        onChange={(e) => setField("departureMonth", e.target.value)}
                       >
                         <option value="Octobre 2026">Octobre 2026 (Vacances Scolaires)</option>
                         <option value="Décembre 2026">Décembre 2026 (Climat idéal)</option>
@@ -301,7 +292,7 @@ export default function OmraPageClient() {
                       id="notes" 
                       rows={3} 
                       value={formData.notes}
-                      onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                      onChange={(e) => setField("notes", e.target.value)}
                       placeholder="Ex: besoin d'un fauteuil roulant, départ depuis une autre ville..."
                     />
                   </div>
