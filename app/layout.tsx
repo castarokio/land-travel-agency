@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Coiny } from "next/font/google";
 import localFont from "next/font/local";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -42,10 +43,17 @@ const travelBernSans = localFont({
   weight: "400"
 });
 
+const heroCoiny = Coiny({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-hero-coiny",
+  display: "swap"
+});
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="fr">
-      <body className={`${travelFutura.variable} ${travelBodoni.variable} ${travelArgent.variable} ${travelBernSans.variable}`}>
+      <body className={`${travelFutura.variable} ${travelBodoni.variable} ${travelArgent.variable} ${travelBernSans.variable} ${heroCoiny.variable}`}>
         <Header />
         <main>{children}</main>
         <Footer />

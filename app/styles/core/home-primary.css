@@ -55,13 +55,14 @@
 
 .hero-copy h1 {
   margin: 0 0 22px;
-  max-width: 760px;
-  font-size: clamp(48px, 5.4vw, 82px);
-  line-height: 0.9;
-  font-family: var(--font-display);
+  max-width: 860px;
+  font-size: clamp(44px, 5.8vw, 88px);
+  line-height: 0.88;
+  font-family: var(--font-hero-coiny), system-ui, sans-serif;
   font-weight: 400;
   letter-spacing: 0;
   text-wrap: balance;
+  text-transform: uppercase;
 }
 
 .split-line {
@@ -86,9 +87,9 @@
 
 .accent-line {
   color: #f8d37a;
-  font-family: var(--font-accent);
-  font-size: 0.95em;
-  font-style: italic;
+  font-family: var(--font-hero-coiny), system-ui, sans-serif;
+  font-size: 1em;
+  font-style: normal;
   font-weight: 400;
 }
 
@@ -98,7 +99,8 @@
   color: rgba(255, 255, 255, 0.83);
   font-size: clamp(15px, 1.35vw, 18px);
   line-height: 1.55;
-  font-weight: 400;
+  font-weight: 600;
+  font-family: var(--font-sans);
 }
 
 .hero-buttons {
@@ -110,6 +112,11 @@
 
 .hero-button {
   min-width: 154px;
+}
+
+.hero-buttons .button {
+  font-family: var(--font-strong);
+  font-weight: 700;
 }
 
 .hero-eyebrow {
@@ -149,6 +156,7 @@
   align-items: center;
   gap: 8px;
   color: rgba(255, 255, 255, 0.62);
+  font-family: var(--font-strong);
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
@@ -157,6 +165,7 @@
 
 .hero-intent-panel strong {
   color: #fff;
+  font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 700;
 }

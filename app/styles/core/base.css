@@ -11,10 +11,6 @@
   --white: #ffffff;
   --shadow: 0 16px 28px rgba(0, 0, 0, 0.14);
   --container: 1120px;
-  --font-sans: var(--font-travel-bern), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-display: var(--font-travel-argent), Georgia, serif;
-  --font-strong: var(--font-travel-futura), var(--font-sans);
-  --font-accent: var(--font-travel-bodoni), Georgia, serif;
 }
 
 
@@ -28,6 +24,10 @@ html {
 
 body {
   margin: 0;
+  --font-sans: var(--font-travel-bern), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: var(--font-travel-argent), Georgia, serif;
+  --font-strong: var(--font-travel-futura), var(--font-sans);
+  --font-accent: var(--font-travel-bodoni), Georgia, serif;
   background:
     linear-gradient(180deg, #fff 0%, #fff 42%, rgba(0, 82, 204, 0.035) 42%, #fff 58%),
     #fff;
