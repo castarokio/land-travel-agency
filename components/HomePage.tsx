@@ -4,7 +4,6 @@ import { Services } from "@/components/home/Initiatives";
 import { Newsletter } from "@/components/home/Newsletter";
 import {
   Destinations,
-  OmraSection,
   Proof,
   WhyChoose
 } from "@/components/home/HomeSections";
@@ -19,7 +18,6 @@ export function HomePage() {
       <Proof />
       <Services />
       <TourismDestinations />
-      <OmraSection />
       <Destinations />
       <WhyChoose />
       <Testimonials />
