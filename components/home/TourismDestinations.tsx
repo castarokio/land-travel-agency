@@ -19,58 +19,41 @@ export function TourismDestinations() {
       if (!cards.length || !stage) return;
 
       gsap.set(cards, {
-        transformOrigin: "50% 100%",
+        transformOrigin: "50% 50%",
         force3D: true
       });
 
-      gsap.fromTo(
-        cards,
-        {
-          y: 96,
-          opacity: 0,
-          rotate: (index) => [-3.5, 2.8, -2.2, 3][index] ?? 0,
-          scale: 0.94
-        },
-        {
-          y: 0,
-          opacity: 1,
-          rotate: (index) => [-1.6, 1.1, -0.8, 1.7][index] ?? 0,
-          scale: 1,
-          duration: 1,
-          stagger: 0.12,
-          ease: "power4.out",
-          scrollTrigger: {
-            trigger: stage,
-            start: "top 78%",
-            once: true
-          }
+      gsap.set(cards, { yPercent: 105, opacity: 1, scale: 1 });
+      gsap.set(cards[0], { yPercent: 0 });
+
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: stage,
+          start: "top top",
+          end: () => `+=${Math.max(1, cards.length - 1) * window.innerHeight}`,
+          pin: true,
+          scrub: 0.9,
+          anticipatePin: 1
         }
-      );
+      });
 
-      cards.forEach((card, index) => {
+      cards.slice(1).forEach((card, index) => {
+        timeline.to(card, {
+          yPercent: 0,
+          duration: 1,
+          ease: "none"
+        }, index);
+      });
+
+      cards.forEach((card) => {
         const image = card.querySelector("img");
-
-        gsap.to(card, {
-          yPercent: -8 - index * 3,
-          rotate: index % 2 === 0 ? -2.4 : 2.2,
-          scale: 0.99 - index * 0.01,
-          ease: "none",
-          scrollTrigger: {
-            trigger: stage,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true
-          }
-        });
-
         if (image) {
           gsap.to(image, {
-            scale: 1.12,
-            yPercent: index % 2 === 0 ? -5 : 5,
+            scale: 1.09,
             ease: "none",
             scrollTrigger: {
-              trigger: card,
-              start: "top bottom",
+              trigger: stage,
+              start: "top top",
               end: "bottom top",
               scrub: true
             }
@@ -98,7 +81,6 @@ export function TourismDestinations() {
         </div>
 
         <div className="tourism-stack-stage" data-tourism-stack-stage>
-          <div className="tourism-stack-ruler" aria-hidden="true" />
           {tourismDestinations.map((dest, index) => (
             <Link 
               key={dest.id} 

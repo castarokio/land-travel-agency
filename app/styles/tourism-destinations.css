@@ -34,40 +34,22 @@
 
 .tourism-stack-stage {
   position: relative;
-  min-height: clamp(620px, 62vw, 820px);
+  height: min(72vh, 760px);
+  min-height: 520px;
   margin: 0 auto;
   max-width: 1180px;
   isolation: isolate;
 }
 
-.tourism-stack-ruler {
-  position: absolute;
-  top: 34px;
-  left: 50%;
-  width: min(96%, 1040px);
-  height: 74px;
-  transform: translateX(-50%);
-  border: 1px solid rgba(8, 8, 8, 0.12);
-  border-left: 0;
-  border-right: 0;
-  background:
-    linear-gradient(to bottom, transparent 0 18px, rgba(8, 8, 8, 0.5) 18px 32px, transparent 32px 42px, rgba(8, 8, 8, 0.26) 42px 56px, transparent 56px);
-  opacity: 0.5;
-  pointer-events: none;
-  z-index: 0;
-}
-
 .tourism-stack-card {
-  --card-top: calc(var(--stack-index) * 112px);
-  --card-width: calc(100% - (var(--stack-index) * 46px));
   position: absolute;
-  top: var(--card-top);
+  inset: 0;
   left: 0;
   right: 0;
-  width: min(100%, var(--card-width));
+  width: 100%;
+  height: 100%;
   margin: 0 auto;
-  aspect-ratio: 16 / 7;
-  z-index: calc(20 - var(--stack-index));
+  z-index: calc(10 + var(--stack-index));
   display: block;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.22);
@@ -84,7 +66,7 @@
   height: 100%;
   object-fit: cover;
   filter: saturate(1.02) contrast(1.04);
-  transform: scale(1.04);
+  transform: scale(1.01);
   z-index: 1;
 }
 
@@ -177,7 +159,7 @@
 /* Bottom CTA Styles */
 .destinations-bottom-cta {
   text-align: center;
-  margin-top: 18px;
+  margin-top: 42px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -389,12 +371,8 @@
 /* Responsive Overrides */
 @media (max-width: 1024px) {
   .tourism-stack-stage {
-    min-height: clamp(570px, 76vw, 720px);
-  }
-  .tourism-stack-card {
-    --card-top: calc(var(--stack-index) * 94px);
-    --card-width: calc(100% - (var(--stack-index) * 28px));
-    aspect-ratio: 16 / 8.5;
+    height: 68vh;
+    min-height: 480px;
   }
   .dest-sights-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -414,22 +392,11 @@
     margin: 0;
   }
   .tourism-stack-stage {
-    display: grid;
-    gap: 16px;
-    min-height: 0;
-  }
-  .tourism-stack-ruler {
-    display: none;
+    height: 64vh;
+    min-height: 430px;
   }
   .tourism-stack-card {
-    --card-width: 100%;
-    position: relative;
-    top: auto;
-    left: auto;
-    right: auto;
-    width: 100%;
-    aspect-ratio: 4 / 5;
-    transform: none;
+    border-radius: 8px;
     box-shadow: 0 22px 44px rgba(8, 8, 8, 0.18);
   }
   .tourism-stack-shade {
