@@ -17,7 +17,6 @@ const buttonSelector = [
 
 const surfaceSelector = [
   ".hero-intent-panel",
-  ".dest-grid-card",
   ".destination-card",
   ".placeholder-card",
   ".initiative-row",
