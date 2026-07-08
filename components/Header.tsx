@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
@@ -115,8 +116,17 @@ export function Header() {
                     <motion.div layout className="nav-dropdown-inner">
                       {item.children.map((child) => (
                         <Link key={child.href} href={child.href} className="nav-dropdown-link">
-                          <span>{child.label}</span>
-                          <small>{child.href.includes("local") ? "Séjours en Algérie" : "Voyages monde"}</small>
+                          <Image
+                            src={child.href.includes("local") ? "/assets/local-coastal-resort.webp" : "/assets/intl-maldives-resort.webp"}
+                            alt=""
+                            width={140}
+                            height={70}
+                            className="nav-dropdown-image"
+                          />
+                          <span>
+                            <strong>{child.label}</strong>
+                            <small>{child.href.includes("local") ? "Séjours en Algérie" : "Voyages monde"}</small>
+                          </span>
                         </Link>
                       ))}
                     </motion.div>
