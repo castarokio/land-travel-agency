@@ -36,13 +36,6 @@ const travelArgent = localFont({
   weight: "400"
 });
 
-const travelBernSans = localFont({
-  src: "../public/fonts/BernSansCT-Regular.otf",
-  variable: "--font-travel-bern",
-  display: "swap",
-  weight: "400"
-});
-
 const heroCoiny = Coiny({
   subsets: ["latin"],
   weight: "400",
@@ -53,7 +46,7 @@ const heroCoiny = Coiny({
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="fr">
-      <body className={`${travelFutura.variable} ${travelBodoni.variable} ${travelArgent.variable} ${travelBernSans.variable} ${heroCoiny.variable}`}>
+      <body className={`${travelFutura.variable} ${travelBodoni.variable} ${travelArgent.variable} ${heroCoiny.variable}`}>
         <Header />
         <main>{children}</main>
         <Footer />

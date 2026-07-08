@@ -24,7 +24,7 @@ html {
 
 body {
   margin: 0;
-  --font-sans: var(--font-travel-bern), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: Helvetica, Arial, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-display: var(--font-travel-argent), Georgia, serif;
   --font-strong: var(--font-travel-futura), var(--font-sans);
   --font-accent: var(--font-travel-bodoni), Georgia, serif;
