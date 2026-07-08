@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { CalendarDays, ChevronRight, MapPin, PlaneTakeoff } from "lucide-react";
 import { gsap, ScrollTrigger, shouldReduceMotion } from "@/components/home/animation";
 import { SplitLine } from "@/components/home/SplitLine";
 
@@ -11,7 +10,7 @@ export function Hero() {
     if (shouldReduceMotion()) return;
 
     const context = gsap.context(() => {
-      gsap.from([".hero-eyebrow", ".hero-lead", ".hero-buttons", ".hero-intent-panel"], {
+      gsap.from([".hero-eyebrow", ".hero-lead", ".hero-journey-wrap"], {
         y: 26,
         opacity: 0,
         duration: 0.8,
@@ -64,30 +63,9 @@ export function Hero() {
           <p className="hero-lead">
             {"Nous préparons votre dossier, vos réservations et votre départ avec un conseiller qui suit chaque étape jusqu'au voyage."}
           </p>
-          <div className="hero-buttons">
-            <Link className="button hero-button" href="#services">
-              {"Demander un devis"}
-            </Link>
-            <Link className="button button-ghost hero-button-secondary" href="/contact">
-              {"Parler à un conseiller"}
-            </Link>
-          </div>
-
-          <div className="hero-intent-panel" aria-label="Démarrer une demande">
-            <div>
-              <span><PlaneTakeoff size={16} /> Projet</span>
-              <strong>Études, tourisme ou Omra</strong>
-            </div>
-            <div>
-              <span><MapPin size={16} /> Destination</span>
-              <strong>Selon votre budget</strong>
-            </div>
-            <div>
-              <span><CalendarDays size={16} /> Réponse</span>
-              <strong>Proposition sous 24h</strong>
-            </div>
-            <Link href="/contact" aria-label="Commencer ma demande">
-              <ChevronRight size={20} />
+          <div className="hero-journey-wrap">
+            <Link className="hero-journey-button" href="/contact">
+              <span>Start your journey</span>
             </Link>
           </div>
         </div>

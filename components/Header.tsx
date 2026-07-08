@@ -52,14 +52,13 @@ export function Header() {
   useEffect(() => {
     const onScroll = () => {
       const currentScrollY = window.scrollY;
-      const delta = currentScrollY - lastScrollY.current;
+      const hero = document.querySelector<HTMLElement>(".hero-section");
+      const heroBottom = hero ? hero.offsetTop + hero.offsetHeight : 120;
 
       setScrolled(currentScrollY > 12);
-      setHidden(!open && currentScrollY > 120 && delta > 8);
+      setHidden(!open && currentScrollY > heroBottom - 88);
 
-      if (Math.abs(delta) > 4) {
-        lastScrollY.current = currentScrollY;
-      }
+      lastScrollY.current = currentScrollY;
     };
 
     onScroll();

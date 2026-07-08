@@ -46,20 +46,6 @@
     gap: 48px;
   }
 
-  .hero-intent-panel {
-    grid-template-columns: 1fr;
-    max-width: 520px;
-  }
-
-  .hero-intent-panel div {
-    border-right: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
-  }
-
-  .hero-intent-panel a {
-    min-height: 52px;
-  }
-
   .services-grid-layout {
     gap: 40px;
   }
@@ -161,10 +147,6 @@
     line-height: 1.48;
   }
 
-  .hero-intent-panel div {
-    padding: 16px;
-  }
-
   .initiatives-heading h2,
   .services-page-hero h1 {
     font-size: 38px;
@@ -248,17 +230,6 @@
 
   .service-orbit-image img {
     height: 260px;
-  }
-
-  .hero-buttons {
-    flex-direction: column;
-    align-items: stretch;
-    width: 100%;
-    gap: 12px;
-  }
-
-  .hero-buttons a {
-    width: 100%;
   }
 
   .section-space {

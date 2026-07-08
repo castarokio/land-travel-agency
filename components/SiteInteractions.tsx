@@ -16,7 +16,6 @@ const buttonSelector = [
 ].join(",");
 
 const surfaceSelector = [
-  ".hero-intent-panel",
   ".dest-grid-card",
   ".destination-card",
   ".placeholder-card",
