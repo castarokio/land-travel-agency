@@ -47,7 +47,7 @@ export function Hero() {
         preload="metadata"
         aria-hidden="true"
       >
-        <source src="/assets/hero-airport-walk.mp4" type="video/mp4" />
+        <source src="/assets/hero-jet-takeoff.mp4" type="video/mp4" />
       </video>
       <div className="hero-video-overlay" aria-hidden="true" />
 

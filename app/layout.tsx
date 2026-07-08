@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Coiny } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SiteInteractions } from "@/components/SiteInteractions";
@@ -13,17 +12,10 @@ export const metadata: Metadata = {
   description: "Cabinet de conseil en éducation internationale, tourisme local/international et voyages Omra."
 };
 
-const heroCoiny = Coiny({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-hero-coiny",
-  display: "swap"
-});
-
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="fr">
-      <body className={heroCoiny.variable}>
+      <body>
         <Header />
         <main>{children}</main>
         <Footer />
