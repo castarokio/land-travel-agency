@@ -3,12 +3,23 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { motion } from "framer-motion";
+import { Menu, X } from "lucide-react";
 import { navItems } from "@/lib/site-data";
 import { Logo } from "@/components/Logo";
 
+const menuTransition = {
+  type: "spring",
+  mass: 0.5,
+  damping: 11.5,
+  stiffness: 100,
+  restDelta: 0.001,
+  restSpeed: 0.001
+} as const;
+
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
@@ -69,27 +80,52 @@ export function Header() {
         </Link>
 
         <nav className="desktop-nav" aria-label="Navigation principale">
+          <div className="desktop-menu-pill" onMouseLeave={() => setActiveMenu(null)}>
           {navItems.map((item) => (
-            <div className="nav-item-wrapper" key={item.label}>
-              <Link
-                href={item.href}
-                className={`nav-item${isActive(item.href) ? " nav-item-active" : ""}`}
-                aria-current={isActive(item.href) ? "page" : undefined}
+            <div
+              className="nav-item-wrapper"
+              key={item.label}
+              onMouseEnter={() => setActiveMenu(item.label)}
+              onFocus={() => setActiveMenu(item.label)}
+            >
+              <motion.div
+                transition={{ duration: 0.3 }}
+                className={`nav-item-shell${isActive(item.href) ? " nav-item-active" : ""}`}
               >
-                {item.label}
-                {item.children && <ChevronDown size={14} />}
-              </Link>
-              {item.children && (
-                <div className="nav-dropdown">
-                  {item.children.map((child) => (
-                    <Link key={child.href} href={child.href}>
-                      {child.label}
-                    </Link>
-                  ))}
-                </div>
+                <Link
+                  href={item.href}
+                  className="nav-item"
+                  aria-current={isActive(item.href) ? "page" : undefined}
+                >
+                  {item.label}
+                </Link>
+              </motion.div>
+              {activeMenu === item.label && item.children && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.85, y: 10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={menuTransition}
+                  className="nav-dropdown-positioner"
+                >
+                  <motion.div
+                    layoutId="active"
+                    transition={menuTransition}
+                    className="nav-dropdown"
+                  >
+                    <motion.div layout className="nav-dropdown-inner">
+                      {item.children.map((child) => (
+                        <Link key={child.href} href={child.href} className="nav-dropdown-link">
+                          <span>{child.label}</span>
+                          <small>{child.href.includes("local") ? "Séjours en Algérie" : "Voyages monde"}</small>
+                        </Link>
+                      ))}
+                    </motion.div>
+                  </motion.div>
+                </motion.div>
               )}
             </div>
           ))}
+          </div>
         </nav>
 
         <div className="desktop-actions">
