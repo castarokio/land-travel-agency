@@ -36,7 +36,7 @@ export function ServicesTimeline() {
         detail:
           "Passez de l'idée au plan d'action : profil, destination, admission, visa et départ avec un accompagnement clair.",
         image: asset("hero-graduate-student.webp"),
-        href: "/study-abroad",
+        href: "/services/study-abroad",
         cta: "Start your journey"
       }
     ],
@@ -170,7 +170,7 @@ export function ServicesTimeline() {
             <p>
               Cet espace accueillera les voyages locaux et internationaux : circuits, hôtels, activités et demandes de devis.
             </p>
-            <Link href="/tourism">Voir la base tourisme</Link>
+            <Link href="/services/tourism">Voir la base tourisme</Link>
           </article>
           <article>
             <span>
@@ -181,7 +181,7 @@ export function ServicesTimeline() {
             <p>
               Cet espace sera dédié aux formules Omra : visa, vols, hôtels, transferts, Ziyarat et accompagnement.
             </p>
-            <Link href="/omra">Voir la base Omra</Link>
+            <Link href="/services/omra">Voir la base Omra</Link>
           </article>
         </div>
       </section>

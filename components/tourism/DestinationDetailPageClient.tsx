@@ -386,7 +386,7 @@ export default function DestinationDetailPageClient({ params }: { params: Promis
 
           <div className="dest-related-grid">
             {relatedDestinations.map((related, idx) => (
-              <Link key={idx} href={`/tourism/destination/${related.id}`} className="dest-related-card">
+              <Link key={idx} href={`/services/tourism/destinations/${related.id}`} className="dest-related-card">
                 <div className="dest-related-img-wrap">
                   <Image 
                     src={related.image} 

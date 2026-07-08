@@ -23,7 +23,37 @@ const nextConfig = {
           return [
             {
               source: "/tourisme",
-              destination: "/tourism",
+              destination: "/services/tourism",
+              permanent: true
+            },
+            {
+              source: "/study-abroad",
+              destination: "/services/study-abroad",
+              permanent: true
+            },
+            {
+              source: "/tourism",
+              destination: "/services/tourism",
+              permanent: true
+            },
+            {
+              source: "/tourism/local",
+              destination: "/services/tourism/local",
+              permanent: true
+            },
+            {
+              source: "/tourism/international",
+              destination: "/services/tourism/international",
+              permanent: true
+            },
+            {
+              source: "/tourism/destination/:id",
+              destination: "/services/tourism/destinations/:id",
+              permanent: true
+            },
+            {
+              source: "/omra",
+              destination: "/services/omra",
               permanent: true
             }
           ];

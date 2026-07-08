@@ -6,12 +6,12 @@ const tourismOptions = [
   {
     title: "Tourisme Local",
     description: "Circuits régionaux, désert, médinas, montagne et séjours courts organisés.",
-    href: "/tourism/local"
+    href: "/services/tourism/local"
   },
   {
     title: "Tourisme International",
     description: "Packages internationaux avec vols, hôtels, transferts et assistance voyage.",
-    href: "/tourism/international"
+    href: "/services/tourism/international"
   }
 ];
 

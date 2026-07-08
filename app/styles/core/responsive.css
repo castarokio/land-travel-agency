@@ -72,8 +72,20 @@
   }
 
   .placeholder-grid,
+  .quick-service-grid,
   .placeholder-grid-compact {
     grid-template-columns: 1fr;
+  }
+
+  .quick-service-grid {
+    grid-template-rows: auto;
+  }
+
+  .quick-service-card.featured,
+  .quick-service-card.standard,
+  .quick-service-card.compact {
+    min-height: 280px;
+    grid-row: auto;
   }
 
   .testimonial-switcher {
@@ -234,6 +246,28 @@
 
   .section-space {
     padding: 60px 0;
+  }
+
+  .quick-service-section {
+    padding: 58px 0;
+  }
+
+  .quick-service-heading {
+    display: block;
+    margin-bottom: 24px;
+  }
+
+  .quick-service-card.featured,
+  .quick-service-card.standard,
+  .quick-service-card.compact {
+    min-height: 250px;
+  }
+
+  .quick-service-card.featured .quick-service-copy,
+  .quick-service-copy {
+    left: 20px;
+    right: 72px;
+    bottom: 20px;
   }
 
   .destination-grid,

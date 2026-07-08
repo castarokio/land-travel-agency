@@ -35,7 +35,7 @@ export const services = [
     cta: "Planifier mon Omra",
     icon: "Kaaba",
     color: "green",
-    href: "/omra"
+    href: "/services/omra"
   },
   {
     title: "IELTS, TOEFL & Langues",

@@ -17,6 +17,7 @@ const buttonSelector = [
 
 const surfaceSelector = [
   ".dest-grid-card",
+  ".quick-service-card",
   ".destination-card",
   ".placeholder-card",
   ".initiative-row",

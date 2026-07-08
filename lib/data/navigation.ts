@@ -14,19 +14,18 @@ import {
 } from "lucide-react";
 
 export const navItems = [
-  { label: "Accueil", href: "/" },
-  { label: "Universités", href: "/universities" },
-  { label: "Services", href: "/services" },
+  { label: "Home", href: "/" },
+  { label: "Study Abroad", href: "/services/study-abroad" },
   {
-    label: "Tourisme",
-    href: "/tourism",
+    label: "Tourism",
+    href: "/services/tourism",
     children: [
-      { label: "Tourisme Local", href: "/tourism/local" },
-      { label: "Tourisme International", href: "/tourism/international" }
+      { label: "Local", href: "/services/tourism/local" },
+      { label: "International", href: "/services/tourism/international" }
     ]
   },
-  { label: "Omra", href: "/omra" },
-  { label: "À Propos", href: "/about" },
+  { label: "Omra", href: "/services/omra" },
+  { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" }
 ];
 

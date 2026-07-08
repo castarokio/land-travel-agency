@@ -6,6 +6,10 @@ import { gsap, ScrollTrigger, shouldReduceMotion } from "@/components/home/anima
 const splitTargets = [
   ".hero-copy .split-line-inner",
   ".hero-copy > p",
+  ".quick-service-heading .section-label",
+  ".quick-service-heading h2",
+  ".quick-service-copy strong",
+  ".quick-service-copy small",
   ".proof-title",
   ".initiatives-heading h2",
   ".placeholder-intro h2",

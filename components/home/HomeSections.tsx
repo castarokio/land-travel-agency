@@ -43,7 +43,7 @@ export function TourismSections() {
             Des voyages locaux riches en culture aux destinations de rêve internationales, trouvez le forfait idéal conçu sur mesure.
           </p>
         </div>
-        <Link className="placeholder-card media-card scroll-trigger-item" id="local-tourism" href="/tourism/local">
+        <Link className="placeholder-card media-card scroll-trigger-item" id="local-tourism" href="/services/tourism/local">
           <Image src={asset("local-desert-sunset.webp")} width={540} height={360} alt="Dunes de Sahara - Tourisme Local" />
           <span className="home-pkg-badge" style={{ background: "var(--orange)" }}>Local</span>
           <span className="placeholder-icon">
@@ -54,7 +54,7 @@ export function TourismSections() {
             <p style={{ margin: 0, fontSize: "12px", opacity: 0.9 }}>Dunes du Sahara, Riads de Fès & Trekking Atlas</p>
           </div>
         </Link>
-        <Link className="placeholder-card media-card scroll-trigger-item" id="international-tourism" href="/tourism/international">
+        <Link className="placeholder-card media-card scroll-trigger-item" id="international-tourism" href="/services/tourism/international">
           <Image src={asset("intl-maldives-resort.webp")} width={540} height={360} alt="Maldives pilotis - Tourisme International" />
           <span className="home-pkg-badge" style={{ background: "var(--primary)" }}>International</span>
           <span className="placeholder-icon">

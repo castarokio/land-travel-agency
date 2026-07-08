@@ -19,8 +19,8 @@ export function Footer() {
         <div className="footer-col-hover">
           <h3>Contenu</h3>
           <Link href="/universities">Universités</Link>
-          <Link href="/tourism/local">Tourisme Local</Link>
-          <Link href="/tourism/international">Tourisme International</Link>
+          <Link href="/services/tourism/local">Tourisme Local</Link>
+          <Link href="/services/tourism/international">Tourisme International</Link>
         </div>
         <div className="footer-col-hover">
           <h3>Nous Contacter</h3>

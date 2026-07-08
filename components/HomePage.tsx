@@ -2,6 +2,7 @@ import { Hero } from "@/components/home/Hero";
 import { HomeTextSplit } from "@/components/home/HomeTextSplit";
 import { Services } from "@/components/home/Initiatives";
 import { Newsletter } from "@/components/home/Newsletter";
+import { QuickServiceSelector } from "@/components/home/QuickServiceSelector";
 import {
   Destinations,
   Proof,
@@ -15,6 +16,7 @@ export function HomePage() {
     <>
       <HomeTextSplit />
       <Hero />
+      <QuickServiceSelector />
       <Proof />
       <Services />
       <TourismDestinations />

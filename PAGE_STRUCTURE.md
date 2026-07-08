@@ -15,6 +15,39 @@ Stack:
 Purpose:
 - Provide shared navigation, footer links, and global hover/motion interactions.
 
+Main navigation:
+- Home: `/`
+- Study Abroad: `/services/study-abroad`
+- Tourism: `/services/tourism`
+- Omra: `/services/omra`
+- About: `/about`
+- Contact: `/contact`
+
+Recommended sitemap:
+
+```text
+/
+├── /services
+│   ├── /study-abroad
+│   ├── /tourism
+│   │   ├── /local
+│   │   ├── /international
+│   │   └── /destinations/[id]
+│   └── /omra
+├── /universities
+├── /about
+├── /contact
+└── /portal
+```
+
+Legacy redirects:
+- `/study-abroad` -> `/services/study-abroad`
+- `/tourism` -> `/services/tourism`
+- `/tourism/local` -> `/services/tourism/local`
+- `/tourism/international` -> `/services/tourism/international`
+- `/tourism/destination/[id]` -> `/services/tourism/destinations/[id]`
+- `/omra` -> `/services/omra`
+
 ## `/` Home
 
 Purpose:
@@ -27,6 +60,11 @@ Component stack:
 - `Hero`
   - Full-screen video hero using the jet takeoff video.
   - Contains agency label, main headline, short positioning copy, and the `Start your journey` CTA.
+- `QuickServiceSelector`
+  - Three premium service cards placed before logos and long-form sections.
+  - Main card: `Study Abroad` linking to `/services/study-abroad`.
+  - Secondary card: `Tourism` linking to `/services/tourism`.
+  - Smaller card: `Omra` linking to `/services/omra`.
 - `Proof`
   - Horizontal university logo ticker.
   - Builds trust by showing recognizable universities.
@@ -51,7 +89,7 @@ Component stack:
 Removed from home:
 - `OmraSection`
   - The large Omra promo card shown between tourism destinations and study destinations has been removed from the homepage.
-  - The standalone `/omra` page still exists.
+  - The standalone Omra service page now lives at `/services/omra`.
 
 ## `/services`
 
@@ -67,7 +105,23 @@ Component stack:
   - Orbit card display for active/previous/next step.
   - Bottom placeholder cards for tourism and Omra routes.
 
-## `/tourism`
+## `/services/study-abroad`
+
+Purpose:
+- Service route for the study abroad path.
+- Long-term URL for admissions, documents, and visa guidance.
+
+Component stack:
+- `MotionPageShell`
+  - Section label.
+  - Title.
+  - Short future-page description.
+  - CTA back to `/services`.
+
+Redirect:
+- `/study-abroad` redirects to `/services/study-abroad`.
+
+## `/services/tourism`
 
 Purpose:
 - Gateway page that splits users into local or international tourism.
@@ -77,10 +131,13 @@ Component stack:
   - Section label and page title.
   - Short explanatory copy.
   - Two large route buttons:
-    - `/tourism/local`
-    - `/tourism/international`
+    - `/services/tourism/local`
+    - `/services/tourism/international`
 
-## `/tourism/local`
+Redirect:
+- `/tourism` redirects to `/services/tourism`.
+
+## `/services/tourism/local`
 
 Purpose:
 - Local tourism package page for regional trips and adventure circuits.
@@ -93,7 +150,10 @@ Component stack:
   - Inquiry form section.
   - Success state after form submission.
 
-## `/tourism/international`
+Redirect:
+- `/tourism/local` redirects to `/services/tourism/local`.
+
+## `/services/tourism/international`
 
 Purpose:
 - International tourism package page for organized destination packages.
@@ -107,7 +167,10 @@ Component stack:
   - Inquiry form section.
   - Success state after form submission.
 
-## `/tourism/destination/[id]`
+Redirect:
+- `/tourism/international` redirects to `/services/tourism/international`.
+
+## `/services/tourism/destinations/[id]`
 
 Purpose:
 - Detailed destination page for homepage tourism cards.
@@ -123,7 +186,10 @@ Component stack:
   - Related destinations.
   - CTA back toward tourism inquiry flow.
 
-## `/omra`
+Redirect:
+- `/tourism/destination/[id]` redirects to `/services/tourism/destinations/[id]`.
+
+## `/services/omra`
 
 Purpose:
 - Full Omra service page.
@@ -138,17 +204,8 @@ Component stack:
   - Inquiry form.
   - Success state after form submission.
 
-## `/study-abroad`
-
-Purpose:
-- Placeholder route for a future complete study abroad journey.
-
-Component stack:
-- `MotionPageShell`
-  - Section label.
-  - Title.
-  - Short future-page description.
-  - CTA back to `/services`.
+Redirect:
+- `/omra` redirects to `/services/omra`.
 
 ## `/universities`
 

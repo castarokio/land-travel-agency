@@ -38,7 +38,7 @@ export function TourismDestinations() {
           {tourismDestinations.map((dest) => (
             <Link 
               key={dest.id} 
-              href={`/tourism/destination/${dest.id}`} 
+              href={`/services/tourism/destinations/${dest.id}`} 
               className={`dest-grid-card ${getGridClass(dest.id)}`}
             >
               <Image 
