@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Coiny } from "next/font/google";
-import localFont from "next/font/local";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SiteInteractions } from "@/components/SiteInteractions";
@@ -14,28 +13,6 @@ export const metadata: Metadata = {
   description: "Cabinet de conseil en éducation internationale, tourisme local/international et voyages Omra."
 };
 
-const travelFutura = localFont({
-  src: "../public/fonts/FuturaBold.ttf",
-  variable: "--font-travel-futura",
-  display: "swap",
-  weight: "700"
-});
-
-const travelBodoni = localFont({
-  src: "../public/fonts/BodoniItalic.ttf",
-  variable: "--font-travel-bodoni",
-  display: "swap",
-  style: "italic",
-  weight: "400"
-});
-
-const travelArgent = localFont({
-  src: "../public/fonts/Argent-Regular.woff",
-  variable: "--font-travel-argent",
-  display: "swap",
-  weight: "400"
-});
-
 const heroCoiny = Coiny({
   subsets: ["latin"],
   weight: "400",
@@ -46,7 +23,7 @@ const heroCoiny = Coiny({
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="fr">
-      <body className={`${travelFutura.variable} ${travelBodoni.variable} ${travelArgent.variable} ${heroCoiny.variable}`}>
+      <body className={heroCoiny.variable}>
         <Header />
         <main>{children}</main>
         <Footer />
