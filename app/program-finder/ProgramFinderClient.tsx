@@ -1,6 +1,6 @@
 "use client";
 
-import { MouseEvent, useEffect, useMemo, useState } from "react";
+import { CSSProperties, MouseEvent, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
@@ -22,8 +22,116 @@ const languageOptions = [
   { label: "Turc", detail: "Je suis ouvert à la Turquie et aux années préparatoires." },
   { label: "Allemand", detail: "Je vise l'Allemagne ou je peux commencer une préparation." },
   { label: "Espagnol", detail: "Je suis ouvert à l'Espagne ou aux options européennes." },
+  { label: "Italien", detail: "Je peux envisager l'Italie ou un programme en italien." },
+  { label: "Russe", detail: "Je suis ouvert aux programmes russophones ou préparatoires." },
+  { label: "Chinois", detail: "Je peux viser la Chine ou un parcours avec préparation linguistique." },
+  { label: "Japonais", detail: "Je suis intéressé par le Japon ou une préparation avant admission." },
+  { label: "Coréen", detail: "Je peux considérer la Corée et ses exigences linguistiques." },
+  { label: "Portugais", detail: "Je suis ouvert aux pays ou programmes lusophones." },
+  { label: "Néerlandais", detail: "Je peux considérer les Pays-Bas ou la Belgique." },
+  { label: "Suédois", detail: "Je suis ouvert aux programmes nordiques." },
+  { label: "Norvégien", detail: "Je peux envisager la Norvège ou un parcours préparatoire." },
+  { label: "Danois", detail: "Je peux considérer le Danemark et ses exigences de langue." },
+  { label: "Finnois", detail: "Je suis ouvert à la Finlande ou une année préparatoire." },
+  { label: "Polonais", detail: "Je peux étudier dans un contexte polonais." },
+  { label: "Roumain", detail: "Je suis ouvert à la Roumanie ou aux programmes associés." },
+  { label: "Grec", detail: "Je peux envisager la Grèce ou une préparation linguistique." },
+  { label: "Hindi", detail: "Je peux considérer un environnement académique en hindi." },
+  { label: "Ourdou", detail: "Je peux étudier dans un contexte ourdouphone." },
+  { label: "Malais", detail: "Je suis ouvert à la Malaisie et aux programmes locaux." },
+  { label: "Indonésien", detail: "Je peux considérer l'Indonésie ou un parcours préparatoire." },
+  { label: "Thaï", detail: "Je suis ouvert à la Thaïlande et à ses exigences." },
+  { label: "Vietnamien", detail: "Je peux envisager le Vietnam ou une préparation." },
+  { label: "Tchèque", detail: "Je suis ouvert à la Tchéquie et aux admissions locales." },
+  { label: "Hongrois", detail: "Je peux considérer la Hongrie ou une année de langue." },
+  { label: "Ukrainien", detail: "Je suis ouvert aux programmes ukrainophones." },
+  { label: "Persan", detail: "Je peux considérer un environnement persanophone." },
   { label: "Je veux apprendre", detail: "Je suis prêt à faire une année de langue si le programme vaut le coup." },
   { label: "Pas encore sûr", detail: "Aidez-moi à choisir selon le pays, le budget et le niveau demandé." },
+];
+
+const exploratoryLanguageLabels = ["Je veux apprendre", "Pas encore sûr"];
+
+const languageTestOptions: Record<string, { label: string; detail: string }[]> = {
+  Français: [
+    { label: "TCF", detail: "Test de connaissance du français pour études ou immigration." },
+    { label: "TEF", detail: "Accepté par plusieurs écoles, visas et démarches canadiennes." },
+    { label: "DELF / DALF", detail: "Diplôme officiel utile si vous avez déjà un niveau certifié." },
+    { label: "Pas encore", detail: "Je parle français mais je n'ai pas encore passé de test." },
+  ],
+  Anglais: [
+    { label: "IELTS", detail: "Très demandé pour UK, Canada, Europe et admissions internationales." },
+    { label: "TOEFL", detail: "Souvent accepté par les universités anglophones." },
+    { label: "Duolingo / PTE", detail: "Option plus rapide si l'école l'accepte." },
+    { label: "Pas encore", detail: "Je parle anglais mais je n'ai pas encore de score officiel." },
+  ],
+  Allemand: [
+    { label: "TestDaF", detail: "Test académique courant pour les études en Allemagne." },
+    { label: "Goethe / telc", detail: "Certificat utile pour prouver un niveau A1 à C2." },
+    { label: "DSH", detail: "Examen universitaire allemand selon l'établissement." },
+    { label: "Pas encore", detail: "Je dois encore préparer ou choisir le bon test." },
+  ],
+  Espagnol: [
+    { label: "DELE", detail: "Diplôme officiel reconnu pour prouver le niveau d'espagnol." },
+    { label: "SIELE", detail: "Test flexible et moderne pour certifier l'espagnol." },
+    { label: "Test interne", detail: "Je peux accepter un placement test de l'école." },
+    { label: "Pas encore", detail: "Je n'ai pas encore passé de test d'espagnol." },
+  ],
+  Italien: [
+    { label: "CILS", detail: "Certification officielle souvent utilisée pour l'italien." },
+    { label: "CELI", detail: "Certificat reconnu pour études et niveau académique." },
+    { label: "Test interne", detail: "Je peux passer l'évaluation de l'établissement." },
+    { label: "Pas encore", detail: "Je n'ai pas encore de certificat italien." },
+  ],
+  Russe: [
+    { label: "TORFL / TRKI", detail: "Test officiel de russe langue étrangère." },
+    { label: "Test universitaire", detail: "Je peux passer le test de l'université." },
+    { label: "Année préparatoire", detail: "Je préfère renforcer le russe avant admission." },
+    { label: "Pas encore", detail: "Je n'ai pas encore de preuve officielle." },
+  ],
+  Chinois: [
+    { label: "HSK", detail: "Test standard pour certifier le chinois mandarin." },
+    { label: "Test de placement", detail: "Je peux être évalué par l'école." },
+    { label: "Année préparatoire", detail: "Je préfère apprendre avant le programme." },
+    { label: "Pas encore", detail: "Je n'ai pas encore de score officiel." },
+  ],
+  Japonais: [
+    { label: "JLPT", detail: "Test reconnu pour certifier le niveau de japonais." },
+    { label: "EJU / placement", detail: "Selon l'école, un test d'entrée ou placement peut être demandé." },
+    { label: "Année préparatoire", detail: "Je préfère renforcer le japonais avant admission." },
+    { label: "Pas encore", detail: "Je n'ai pas encore de certificat." },
+  ],
+  Coréen: [
+    { label: "TOPIK", detail: "Test officiel pour certifier le niveau de coréen." },
+    { label: "Test universitaire", detail: "Je peux passer l'évaluation de l'établissement." },
+    { label: "Année préparatoire", detail: "Je préfère renforcer le coréen avant admission." },
+    { label: "Pas encore", detail: "Je n'ai pas encore de score officiel." },
+  ],
+  Portugais: [
+    { label: "CAPLE / CIPLE", detail: "Certification officielle de portugais." },
+    { label: "Test de placement", detail: "Je peux passer une évaluation de niveau." },
+    { label: "Année préparatoire", detail: "Je préfère renforcer la langue avant admission." },
+    { label: "Pas encore", detail: "Je n'ai pas encore de certificat." },
+  ],
+  Turc: [
+    { label: "TÖMER", detail: "Certificat courant pour suivre un programme en turc." },
+    { label: "Test universitaire", detail: "Je peux passer le test de langue de l'établissement." },
+    { label: "Année préparatoire", detail: "Je préfère apprendre le turc avant le programme." },
+    { label: "Pas encore", detail: "Je n'ai pas encore de preuve officielle." },
+  ],
+  Arabe: [
+    { label: "Certificat d'école", detail: "J'ai une preuve de niveau ou de scolarité en arabe." },
+    { label: "Test de placement", detail: "Je peux faire évaluer mon niveau par l'établissement." },
+    { label: "Langue d'accompagnement", detail: "Je veux surtout être accompagné en arabe." },
+    { label: "Pas encore", detail: "Je n'ai pas de test officiel." },
+  ],
+};
+
+const fallbackLanguageTests = [
+  { label: "Certificat officiel", detail: "J'ai une preuve officielle de niveau pour cette langue." },
+  { label: "Test de placement", detail: "Je peux passer un test proposé par l'école." },
+  { label: "Année préparatoire", detail: "Je préfère renforcer la langue avant de commencer." },
+  { label: "Pas encore", detail: "Je n'ai pas encore passé de test." },
 ];
 
 const fieldOptions = [
@@ -96,6 +204,12 @@ const baseSteps = [
     description: "Choisissez les langues déjà fortes, puis ajoutez celles que vous êtes prêt à améliorer. On adaptera les pays et les années préparatoires.",
   },
   {
+    id: "languageTest",
+    label: "Tests",
+    title: "Avez-vous déjà un test de langue ?",
+    description: "On vous pose seulement les tests liés aux langues choisies. Si vous n'avez pas encore de score, ce n'est pas bloquant: cela change simplement la stratégie.",
+  },
+  {
     id: "destination",
     label: "Rêve",
     title: "What country are you dreaming of?",
@@ -126,6 +240,7 @@ type Step = (typeof baseSteps)[number] | {
 };
 
 type StepId = Step["id"];
+type SingleStepId = Exclude<StepId, "language" | "languageTest">;
 
 type Answers = {
   goal: string;
@@ -133,6 +248,7 @@ type Answers = {
   field: string;
   budget: string;
   language: string[];
+  languageTests: Record<string, string[]>;
   destination: string;
   priority: string;
   reflection: string;
@@ -144,6 +260,10 @@ const initialAnswers: Answers = {
   field: "Informatique & IA",
   budget: "Budget équilibré",
   language: ["Français", "Anglais"],
+  languageTests: {
+    Français: ["Pas encore"],
+    Anglais: ["Pas encore"],
+  },
   destination: "Canada",
   priority: "Meilleure chance d'admission",
   reflection: "Donnez-moi une recommandation claire",
@@ -255,6 +375,10 @@ function createInsight(answers: Answers) {
   };
 }
 
+function getSelectedTestLanguages(languages: string[]) {
+  return languages.filter((language) => !exploratoryLanguageLabels.includes(language));
+}
+
 export function ProgramFinderClient() {
   const [stepIndex, setStepIndex] = useState(0);
   const [completed, setCompleted] = useState(false);
@@ -291,11 +415,12 @@ export function ProgramFinderClient() {
       answers.budget,
       answers.destination,
       `${answers.language.length} langue${answers.language.length > 1 ? "s" : ""}`,
+      `${Object.values(answers.languageTests).flat().length} test${Object.values(answers.languageTests).flat().length > 1 ? "s" : ""}`,
     ],
     [answers]
   );
 
-  const setSingle = (key: Exclude<StepId, "language">, value: string) => {
+  const setSingle = (key: SingleStepId, value: string) => {
     setAnswers((current) => ({ ...current, [key]: value }));
   };
 
@@ -307,6 +432,29 @@ export function ProgramFinderClient() {
         language: selected
           ? current.language.filter((item) => item !== language)
           : [...current.language, language],
+        languageTests: selected
+          ? Object.fromEntries(Object.entries(current.languageTests).filter(([key]) => key !== language))
+          : current.languageTests,
+      };
+    });
+  };
+
+  const toggleLanguageTest = (language: string, test: string) => {
+    setAnswers((current) => {
+      const currentTests = current.languageTests[language] ?? [];
+      const selected = currentTests.includes(test);
+      const nextTests = selected
+        ? currentTests.filter((item) => item !== test)
+        : test === "Pas encore"
+          ? ["Pas encore"]
+          : [...currentTests.filter((item) => item !== "Pas encore"), test];
+
+      return {
+        ...current,
+        languageTests: {
+          ...current.languageTests,
+          [language]: nextTests,
+        },
       };
     });
   };
@@ -358,7 +506,11 @@ export function ProgramFinderClient() {
             </div>
           </div>
 
-          <nav className={styles.progressList} aria-label="Progression">
+          <nav
+            className={styles.progressList}
+            aria-label="Progression"
+            style={{ "--finder-step-count": adaptiveSteps.length } as CSSProperties}
+          >
             {adaptiveSteps.map((step, index) => {
               const isActive = index === stepIndex && !completed;
               const isDone = completed || index < stepIndex;
@@ -480,7 +632,62 @@ export function ProgramFinderClient() {
                 </motion.div>
               ) : null}
 
-              {!completed && activeStep.id !== "language" ? (
+              {!completed && activeStep.id === "languageTest" ? (
+                <motion.div
+                  className={styles.testGrid}
+                  initial="hidden"
+                  animate="show"
+                  variants={{
+                    hidden: {},
+                    show: { transition: { staggerChildren: 0.035 } },
+                  }}
+                >
+                  {getSelectedTestLanguages(answers.language).length > 0 ? (
+                    getSelectedTestLanguages(answers.language).map((language) => (
+                      <motion.section
+                        key={language}
+                        className={styles.testGroup}
+                        variants={{
+                          hidden: { opacity: 0, y: 14 },
+                          show: { opacity: 1, y: 0 },
+                        }}
+                        transition={{ duration: 0.22 }}
+                      >
+                        <div className={styles.testGroupHeader}>
+                          <strong>{language}</strong>
+                          <span>{languageTestOptions[language]?.[0]?.label ?? "Test"}</span>
+                        </div>
+                        <div className={styles.testOptions}>
+                          {(languageTestOptions[language] ?? fallbackLanguageTests).map((test) => {
+                            const selected = (answers.languageTests[language] ?? []).includes(test.label);
+                            return (
+                              <button
+                                type="button"
+                                key={test.label}
+                                className={selected ? styles.selectedTest : ""}
+                                onClick={() => toggleLanguageTest(language, test.label)}
+                              >
+                                <span>
+                                  <strong>{test.label}</strong>
+                                  <small>{test.detail}</small>
+                                </span>
+                                {selected ? <Check size={15} /> : null}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </motion.section>
+                    ))
+                  ) : (
+                    <div className={styles.emptyTestState}>
+                      <strong>Aucune langue précise sélectionnée</strong>
+                      <p>Choisissez au moins une langue comme français, anglais, allemand, turc, arabe ou espagnol pour afficher les tests correspondants.</p>
+                    </div>
+                  )}
+                </motion.div>
+              ) : null}
+
+              {!completed && activeStep.id !== "language" && activeStep.id !== "languageTest" ? (
                 <motion.div
                   className={`${styles.optionGrid} ${"imageGrid" in activeStep && activeStep.imageGrid ? styles.imageOptionGrid : ""}`}
                   initial="hidden"
@@ -491,7 +698,7 @@ export function ProgramFinderClient() {
                   }}
                 >
                   {activeStep.options.map((option) => {
-                    const selected = answers[activeStep.id as Exclude<StepId, "language">] === option.label;
+                    const selected = answers[activeStep.id as SingleStepId] === option.label;
                     return (
                       <motion.button
                         variants={{
@@ -502,7 +709,7 @@ export function ProgramFinderClient() {
                         type="button"
                         key={option.label}
                         className={selected ? styles.selectedCard : ""}
-                        onClick={() => setSingle(activeStep.id as Exclude<StepId, "language">, option.label)}
+                        onClick={() => setSingle(activeStep.id as SingleStepId, option.label)}
                       >
                         {selected ? (
                           <span className={styles.checkMark}>
