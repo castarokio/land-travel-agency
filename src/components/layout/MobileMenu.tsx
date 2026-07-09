@@ -61,7 +61,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           >
             <div className={styles.topbar}>
               <Link href="/" onClick={onClose} className={styles.brand}>
-                <Logo />
+                <Logo compact />
                 <span>Land Travel</span>
               </Link>
               <button

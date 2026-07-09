@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -205,9 +206,14 @@ export default function PortalPage() {
         <div>
           {/* Logo Brand */}
           <div className="p-6 border-b border-neutral-100 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-black text-sm">
-              LT
-            </div>
+            <Image
+              src="/assets/landtravel-logo.png"
+              alt=""
+              width={1254}
+              height={1254}
+              className="h-10 w-10 object-contain"
+              priority
+            />
             <div>
               <span className="font-black text-neutral-900 tracking-tight block">LAND TRAVEL</span>
               <span className="text-[10px] text-neutral-400 font-bold uppercase tracking-wider block">Portail Client</span>
