@@ -1,87 +1,72 @@
+import styles from "./AdmissionsTimeline.module.css";
+
+const steps = [
+  {
+    period: "Octobre - Novembre",
+    title: "Orientation & Choix du Projet",
+    desc: "Analyse des relevés, entretien d'orientation, choix des pays et universités cibles.",
+    tags: ["Audit BAC", "Pays cibles", "Universités", "Budget"],
+    week: "phase 1",
+  },
+  {
+    period: "Décembre - Février",
+    title: "Candidatures & Dossier",
+    desc: "Lettres de motivation, CV académique, Campus France ou portails universitaires.",
+    tags: ["Motivation", "CV", "Portails", "Dépôt"],
+    week: "phase 2",
+  },
+  {
+    period: "Mars - Avril",
+    title: "Tests & Entretiens",
+    desc: "Tests linguistiques, entretiens académiques et ajustement des choix selon les réponses.",
+    tags: ["TCF / IELTS", "Entretien", "Suivi", "Relances"],
+    week: "phase 3",
+  },
+  {
+    period: "Mai - Septembre",
+    title: "Visa & Départ",
+    desc: "Acceptation, acompte, dossier consulaire, hébergement, billet et briefing avant départ.",
+    tags: ["Acceptation", "Visa", "Logement", "Accueil"],
+    week: "phase 4",
+  },
+];
+
 export function AdmissionsTimeline() {
-  const steps = [
-    {
-      period: "Octobre - Novembre",
-      title: "Orientation & Choix du Projet",
-      desc: "Analyse approfondie de vos relevés de notes, entretien d'orientation individuel et sélection des pays et universités cibles."
-    },
-    {
-      period: "Décembre - Février",
-      title: "Soumission des Candidatures",
-      desc: "Rédaction des lettres de motivation, montage de votre dossier (Campus France, portails universitaires) et dépôt officiel."
-    },
-    {
-      period: "Mars - Avril",
-      title: "Entretiens & Tests de Langue",
-      desc: "Passage des entretiens académiques obligatoires et des tests linguistiques requis par vos établissements."
-    },
-    {
-      period: "Mai - Juillet",
-      title: "Lettres d'Acceptation & Visa",
-      desc: "Réception de vos acceptations formelles, versement de l'acompte de scolarité et dépôt complet de votre dossier consulaire."
-    },
-    {
-      period: "Août - Septembre",
-      title: "Préparatifs de Départ & Accueil",
-      desc: "Briefing avant départ, réservation de votre billet d'avion, recherche d'hébergement et installation finale dans votre pays d'accueil."
-    }
-  ];
-
   return (
-    <section className="section-space" style={{ background: "var(--cream)/10" }}>
-      <div className="container" style={{ maxWidth: "860px" }}>
-        <div style={{ textAlign: "center", marginBottom: "54px" }}>
-          <p className="section-label">Le Parcours</p>
-          <h2>Calendrier Général des Démarches</h2>
-          <p style={{ color: "var(--muted)", fontSize: "14px", marginTop: "8px" }}>
-            Un projet réussi suit un calendrier précis. Préparez chaque étape au bon moment.
+    <section className={styles.timelineSection} aria-labelledby="admissions-timeline-title">
+      <div className={styles.shell}>
+        <header className={styles.header}>
+          <div className={styles.headerLabel}>
+            <span>03</span>
+            <strong>Calendrier du projet</strong>
+          </div>
+          <div className={styles.headerLine} aria-hidden="true" />
+          <p>
+            Un calendrier précis structure les <mark>phases clés</mark> et les <em>actions</em> à mener
+            pour transformer votre projet d&apos;études en dossier prêt à déposer.
           </p>
-        </div>
+        </header>
 
-        <div style={{ position: "relative", paddingLeft: "32px", borderLeft: "2px dashed var(--border)" }}>
-          {steps.map((step, idx) => (
-            <div key={idx} style={{ position: "relative", marginBottom: "40px" }}>
-              {/* Bullet Node */}
-              <div 
-                style={{ 
-                  position: "absolute", 
-                  left: "-42px", 
-                  top: "2px",
-                  width: "20px", 
-                  height: "20px", 
-                  borderRadius: "50%", 
-                  background: idx === 3 || idx === 4 ? "var(--orange)" : "var(--primary)",
-                  border: "4px solid #fff",
-                  boxShadow: "0 0 8px rgba(0,0,0,0.1)",
-                  zIndex: 2
-                }} 
-              />
-              
-              {/* Step Info */}
-              <div>
-                <span 
-                  style={{ 
-                    fontSize: "11px", 
-                    fontWeight: "800", 
-                    textTransform: "uppercase", 
-                    color: idx === 3 || idx === 4 ? "var(--orange)" : "var(--primary)",
-                    letterSpacing: "1px",
-                    display: "block",
-                    marginBottom: "4px"
-                  }}
-                >
-                  {step.period}
-                </span>
-                
-                <h3 style={{ fontSize: "16px", fontWeight: "700", color: "var(--text)", marginBottom: "8px" }}>
-                  {step.title}
-                </h3>
-                
-                <p style={{ fontSize: "13px", color: "var(--muted)", lineHeight: "1.5" }}>
-                  {step.desc}
-                </p>
+        <div className={styles.cardTrack}>
+          {steps.map((step, index) => (
+            <article className={styles.timelineCard} key={step.title}>
+              <div className={styles.markerLine} aria-hidden="true">
+                {[0, 1, 2, 3].map((dot) => (
+                  <span className={dot === index ? styles.activeDot : ""} key={dot} />
+                ))}
+                <small>{step.week}</small>
               </div>
-            </div>
+
+              <span className={styles.period}>{step.period}</span>
+              <h2 id={index === 0 ? "admissions-timeline-title" : undefined}>{step.title}</h2>
+              <p>{step.desc}</p>
+
+              <div className={styles.tags}>
+                {step.tags.map((tag) => (
+                  <span key={tag}>{tag}</span>
+                ))}
+              </div>
+            </article>
           ))}
         </div>
       </div>
