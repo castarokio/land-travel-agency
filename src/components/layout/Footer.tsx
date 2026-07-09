@@ -9,7 +9,7 @@ import { siteConfig } from "@/data/site";
 export function Footer() {
   const pathname = usePathname();
 
-  if (pathname?.startsWith("/portal")) {
+  if (pathname?.startsWith("/portal") || pathname?.startsWith("/program-finder")) {
     return null;
   }
   const currentYear = new Date().getFullYear();

@@ -5,10 +5,17 @@
   --finder-ink: #0e1118;
   --finder-muted: #5f6878;
   --finder-line: #d8e2f2;
-  min-height: 100vh;
+  position: fixed;
+  inset: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100vh;
+  min-height: 760px;
   display: grid;
   place-items: center;
   padding: 54px 22px;
+  overflow: hidden;
+  overflow-anchor: none;
   background:
     radial-gradient(circle at 12% 10%, rgba(11, 94, 215, 0.13), transparent 34%),
     linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
@@ -16,10 +23,13 @@
 }
 
 .cardShell {
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: 430px minmax(0, 1fr);
   width: min(1180px, 100%);
-  min-height: 720px;
+  height: min(860px, calc(100vh - 44px));
+  min-height: 680px;
+  max-height: none;
   overflow: hidden;
   border-radius: 28px;
   background: #ffffff;
@@ -95,15 +105,15 @@
   position: relative;
   z-index: 2;
   display: grid;
-  gap: 22px;
+  gap: 14px;
 }
 
 .progressStep {
   position: relative;
   display: grid;
-  grid-template-columns: 54px minmax(0, 1fr);
+  grid-template-columns: 46px minmax(0, 1fr);
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   border: 0;
   background: transparent;
   color: rgba(255, 255, 255, 0.68);
@@ -113,10 +123,10 @@
 
 .progressStep::after {
   position: absolute;
-  left: 26px;
-  top: 54px;
+  left: 22px;
+  top: 46px;
   width: 1px;
-  height: 26px;
+  height: 16px;
   content: "";
   background: rgba(255, 255, 255, 0.38);
 }
@@ -128,8 +138,8 @@
 .progressStep span {
   display: grid;
   place-items: center;
-  width: 54px;
-  height: 54px;
+  width: 46px;
+  height: 46px;
   border: 1px solid rgba(255, 255, 255, 0.48);
   border-radius: 50%;
   font-size: 15px;
@@ -138,7 +148,7 @@
 }
 
 .progressStep strong {
-  font-size: 17px;
+  font-size: 15px;
 }
 
 .progressStep.active,
@@ -155,17 +165,20 @@
 }
 
 .panel {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   min-width: 0;
+  min-height: 0;
   padding: 42px 62px 48px;
+  overflow-anchor: none;
 }
 
 .panelTop {
   display: flex;
   justify-content: space-between;
   gap: 18px;
-  margin-bottom: 88px;
+  margin-bottom: 58px;
 }
 
 .panelTop p {
@@ -190,6 +203,10 @@
 
 .stepContent {
   flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 8px;
+  overflow-anchor: none;
 }
 
 .kicker {
@@ -204,7 +221,7 @@
   max-width: 560px;
   margin: 0;
   color: var(--finder-ink);
-  font-size: clamp(42px, 5vw, 60px);
+  font-size: clamp(34px, 4vw, 54px);
   font-weight: 900;
   line-height: 1.08;
   letter-spacing: 0;
@@ -212,7 +229,7 @@
 
 .description {
   max-width: 560px;
-  margin: 20px 0 44px;
+  margin: 18px 0 34px;
   color: var(--finder-muted);
   font-size: 17px;
   line-height: 1.7;
@@ -221,13 +238,13 @@
 .optionGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(210px, 1fr));
-  gap: 28px;
+  gap: 18px;
   max-width: 650px;
 }
 
 .optionGrid button {
   position: relative;
-  min-height: 162px;
+  min-height: 148px;
   border: 1px solid #cfd7e3;
   border-radius: 8px;
   background: #ffffff;
@@ -297,24 +314,49 @@
 }
 
 .languageGrid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 12px;
   max-width: 760px;
 }
 
 .languageGrid button {
-  display: inline-flex;
-  align-items: center;
+  position: relative;
+  display: grid;
   gap: 7px;
   border: 1px solid var(--finder-line);
-  border-radius: 999px;
-  padding: 11px 15px;
+  border-radius: 8px;
+  min-height: 106px;
+  padding: 17px 42px 17px 17px;
   background: #ffffff;
   color: var(--finder-muted);
-  font-size: 13px;
-  font-weight: 800;
+  text-align: left;
   cursor: pointer;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.languageGrid button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 26px rgba(11, 94, 215, 0.1);
+}
+
+.languageGrid strong {
+  color: var(--finder-ink);
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.languageGrid small {
+  color: var(--finder-muted);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.languageGrid svg {
+  position: absolute;
+  top: 17px;
+  right: 17px;
 }
 
 .languageGrid button:hover,
@@ -449,13 +491,54 @@
   line-height: 1.55;
 }
 
+.adviceGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  max-width: 760px;
+  margin: 0 0 24px;
+}
+
+.adviceGrid article {
+  border: 1px solid var(--finder-line);
+  border-radius: 8px;
+  padding: 18px;
+  background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+}
+
+.adviceGrid svg {
+  color: var(--finder-blue);
+}
+
+.adviceGrid strong {
+  display: block;
+  margin: 10px 0 8px;
+  color: var(--finder-ink);
+  font-size: 14px;
+}
+
+.adviceGrid p {
+  margin: 0;
+  color: var(--finder-muted);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
 @media (max-width: 980px) {
   .page {
+    position: static;
+    inset: auto;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
     padding: 22px;
   }
 
   .cardShell {
     grid-template-columns: 1fr;
+    height: auto;
+    min-height: 0;
   }
 
   .rail {
@@ -469,7 +552,7 @@
   }
 
   .progressList {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
   }
 
@@ -495,6 +578,12 @@
   .panelTop {
     margin-bottom: 44px;
   }
+
+  .stepContent {
+    min-height: 0;
+    overflow: visible;
+    padding-right: 0;
+  }
 }
 
 @media (max-width: 640px) {
@@ -503,7 +592,7 @@
   }
 
   .progressList {
-    grid-template-columns: repeat(5, minmax(46px, 1fr));
+    grid-template-columns: repeat(4, minmax(46px, 1fr));
   }
 
   .progressStep span {
@@ -536,6 +625,11 @@
   .optionGrid {
     grid-template-columns: 1fr;
     gap: 16px;
+  }
+
+  .languageGrid,
+  .adviceGrid {
+    grid-template-columns: 1fr;
   }
 
   .imageOptionGrid button {

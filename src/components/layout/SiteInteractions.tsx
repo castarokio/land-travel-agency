@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { ArrowUp } from "lucide-react";
 import { gsap, shouldReduceMotion } from "@/components/home/animation";
 
@@ -64,9 +65,13 @@ function bindHover(
 export function SiteInteractions() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const pathname = usePathname();
+
+  const hideInteractions = pathname?.startsWith("/program-finder");
 
   // GSAP micro-interactions
   useEffect(() => {
+    if (hideInteractions) return;
     if (shouldReduceMotion()) return;
 
     const context = gsap.context(() => {
@@ -95,10 +100,11 @@ export function SiteInteractions() {
     });
 
     return () => context.revert();
-  }, []);
+  }, [hideInteractions]);
 
   // Scroll handler for progress indicator and showing back to top button
   useEffect(() => {
+    if (hideInteractions) return;
     const handleScroll = () => {
       const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
       const currentScroll = window.scrollY;
@@ -112,7 +118,7 @@ export function SiteInteractions() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [hideInteractions]);
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -120,6 +126,10 @@ export function SiteInteractions() {
       behavior: "smooth"
     });
   };
+
+  if (hideInteractions) {
+    return null;
+  }
 
   return (
     <>
