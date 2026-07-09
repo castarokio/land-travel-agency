@@ -272,7 +272,7 @@ export function ProgramFinderClient() {
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     const applyBodyScrollLock = () => {
-      document.body.style.overflow = window.innerWidth > 980 ? "hidden" : previousOverflow;
+      document.body.style.overflow = window.innerWidth > 640 ? "hidden" : previousOverflow;
     };
 
     applyBodyScrollLock();

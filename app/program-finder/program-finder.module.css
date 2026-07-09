@@ -207,6 +207,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   padding-right: 8px;
   overflow-anchor: none;
 }
@@ -529,42 +530,48 @@
 
 @media (max-width: 980px) {
   .page {
-    position: static;
-    inset: auto;
-    height: auto;
-    min-height: 100vh;
-    overflow: visible;
-    padding: 22px;
+    position: fixed;
+    inset: 0;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+    padding: 0;
   }
 
   .cardShell {
+    display: grid;
     grid-template-columns: 1fr;
-    height: auto;
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 100dvh;
     min-height: 0;
-    border-radius: 18px;
-    box-shadow: 0 18px 60px rgba(25, 43, 72, 0.16);
+    border-radius: 0;
+    box-shadow: none;
   }
 
   .rail {
-    min-height: auto;
-    padding: 28px;
+    min-height: 104px;
+    justify-content: end;
+    padding: 18px clamp(20px, 5vw, 44px);
   }
 
-  .backLink,
+  .backLink {
+    display: none;
+  }
+
   .railArtwork {
     display: none;
   }
 
   .progressList {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 8px;
   }
 
   .progressStep {
     grid-template-columns: 1fr;
     justify-items: center;
     text-align: center;
-    gap: 8px;
+    gap: 6px;
   }
 
   .progressStep::after {
@@ -572,27 +579,83 @@
   }
 
   .progressStep strong {
-    font-size: 11px;
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .panel {
-    padding: 30px 24px;
+    padding: clamp(18px, 3.4vw, 34px) clamp(28px, 6vw, 64px);
+    min-height: 0;
   }
 
   .panelTop {
-    margin-bottom: 44px;
+    margin-bottom: clamp(16px, 3vh, 26px);
   }
 
   .stepContent {
     min-height: 0;
-    overflow: visible;
+    overflow-y: auto;
+    overflow-x: hidden;
     padding-right: 0;
+  }
+
+  .stepContent h1 {
+    max-width: 100%;
+    font-size: clamp(36px, 6vw, 56px);
+    line-height: 1.04;
+  }
+
+  .description {
+    max-width: 100%;
+    margin-bottom: 16px;
+    font-size: clamp(15px, 2.1vw, 18px);
+  }
+
+  .optionGrid,
+  .languageGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: none;
+    gap: 14px;
+  }
+
+  .optionGrid button {
+    min-height: 116px;
+    padding: 18px 20px;
+    text-align: left;
+  }
+
+  .imageOptionGrid button {
+    min-height: 230px;
+  }
+
+  .optionImage {
+    height: 126px;
+  }
+
+  .languageGrid button {
+    min-height: 112px;
+    padding: 18px 42px 18px 18px;
+  }
+
+  .footerBar {
+    margin-top: 14px;
   }
 }
 
 @media (max-width: 640px) {
+  .page {
+    position: static;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
   .cardShell {
-    border-radius: 18px;
+    height: auto;
+    min-height: 100vh;
   }
 
   .progressList {
@@ -624,6 +687,11 @@
   .description {
     margin-bottom: 28px;
     font-size: 15px;
+  }
+
+  .checkMark {
+    top: 10px;
+    right: 10px;
   }
 
   .optionGrid {
