@@ -61,6 +61,8 @@ export function AdmissionsTimeline() {
     const context = gsap.context(() => {
       gsap.set(cardsRef.current, {
         autoAlpha: 0,
+        scale: 0.9,
+        transformOrigin: "50% 85%",
         y: (index) => getBaseOffset(index) + 96,
       });
 
@@ -68,30 +70,35 @@ export function AdmissionsTimeline() {
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: "+=210%",
+          end: "+=270%",
           pin: true,
-          scrub: 0.85,
+          scrub: 1.05,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       });
 
-      timeline
-        .to(cardsRef.current, {
+      cardsRef.current.forEach((card, index) => {
+        timeline.to(card, {
           autoAlpha: 1,
-          y: (index) => getBaseOffset(index),
-          duration: 1,
-          ease: "power3.out",
-          stagger: 0.22,
-        })
-        .to({}, { duration: 0.35 })
-        .to(cardsRef.current, {
-          autoAlpha: 0,
-          y: (index) => getBaseOffset(index) - 96,
-          duration: 1,
-          ease: "power3.inOut",
-          stagger: 0.22,
+          scale: 1,
+          y: getBaseOffset(index),
+          duration: 0.56,
+          ease: "back.out(1.35)",
         });
+      });
+
+      timeline.to({}, { duration: 0.48 });
+
+      cardsRef.current.forEach((card, index) => {
+        timeline.to(card, {
+          autoAlpha: 0,
+          scale: 0.96,
+          y: getBaseOffset(index) - 92,
+          duration: 0.48,
+          ease: "power3.inOut",
+        });
+      });
     }, section);
 
     return () => context.revert();
