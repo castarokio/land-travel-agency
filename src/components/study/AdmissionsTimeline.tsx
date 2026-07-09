@@ -1,4 +1,11 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./AdmissionsTimeline.module.css";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const steps = [
   {
@@ -32,8 +39,66 @@ const steps = [
 ];
 
 export function AdmissionsTimeline() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const cardsRef = useRef<HTMLElement[]>([]);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+
+    if (!section) {
+      return;
+    }
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    if (reduceMotion.matches) {
+      gsap.set(cardsRef.current, { autoAlpha: 1, clearProps: "transform" });
+      return;
+    }
+
+    const getBaseOffset = (index: number) => (window.innerWidth > 1040 && index % 2 === 1 ? 58 : 0);
+
+    const context = gsap.context(() => {
+      gsap.set(cardsRef.current, {
+        autoAlpha: 0,
+        y: (index) => getBaseOffset(index) + 96,
+      });
+
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: "+=210%",
+          pin: true,
+          scrub: 0.85,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      timeline
+        .to(cardsRef.current, {
+          autoAlpha: 1,
+          y: (index) => getBaseOffset(index),
+          duration: 1,
+          ease: "power3.out",
+          stagger: 0.22,
+        })
+        .to({}, { duration: 0.35 })
+        .to(cardsRef.current, {
+          autoAlpha: 0,
+          y: (index) => getBaseOffset(index) - 96,
+          duration: 1,
+          ease: "power3.inOut",
+          stagger: 0.22,
+        });
+    }, section);
+
+    return () => context.revert();
+  }, []);
+
   return (
-    <section className={styles.timelineSection} aria-labelledby="admissions-timeline-title">
+    <section className={styles.timelineSection} aria-labelledby="admissions-timeline-title" ref={sectionRef}>
       <div className={styles.shell}>
         <header className={styles.header}>
           <div className={styles.headerLabel}>
@@ -49,7 +114,15 @@ export function AdmissionsTimeline() {
 
         <div className={styles.cardTrack}>
           {steps.map((step, index) => (
-            <article className={styles.timelineCard} key={step.title}>
+            <article
+              className={styles.timelineCard}
+              key={step.title}
+              ref={(node) => {
+                if (node) {
+                  cardsRef.current[index] = node;
+                }
+              }}
+            >
               <div className={styles.markerLine} aria-hidden="true">
                 {[0, 1, 2, 3].map((dot) => (
                   <span className={dot === index ? styles.activeDot : ""} key={dot} />
