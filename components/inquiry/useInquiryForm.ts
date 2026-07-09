@@ -1,43 +1,51 @@
 "use client";
 
+import { useForm, UseFormProps, FieldValues, Resolver } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import * as z from "zod";
 
-type ContactFields = {
-  name: string;
-  email: string;
-  phone: string;
-};
+// Base contact fields schema
+export const contactSchema = z.object({
+  name: z.string().min(3, "Le nom doit contenir au moins 3 caractères."),
+  email: z.string().email("Adresse e-mail invalide."),
+  phone: z.string().min(8, "Le numéro de téléphone doit contenir au moins 8 chiffres."),
+});
 
-export function useInquiryForm<TFormData extends ContactFields>(
-  initialFormData: TFormData,
-  requiredMessage = "Veuillez remplir tous les champs obligatoires (Nom, Email, Téléphone)."
+// Local & International Tourism Schema
+export const tourismInquirySchema = contactSchema.extend({
+  travelers: z.string().min(1, "Veuillez sélectionner le nombre de voyageurs."),
+  date: z.string().min(1, "Veuillez sélectionner une date de départ."),
+  notes: z.string().optional(),
+});
+
+// Omra Schema
+export const omraInquirySchema = contactSchema.extend({
+  pilgrims: z.string().min(1, "Veuillez sélectionner le nombre de pèlerins."),
+  departureMonth: z.string().min(1, "Veuillez sélectionner un mois de départ."),
+  notes: z.string().optional(),
+});
+
+export type ContactFields = z.infer<typeof contactSchema>;
+export type TourismInquiryFields = z.infer<typeof tourismInquirySchema>;
+export type OmraInquiryFields = z.infer<typeof omraInquirySchema>;
+
+type ZodResolverSchema = Parameters<typeof zodResolver>[0];
+
+export function useInquiryForm<TFieldValues extends FieldValues>(
+  schema: ZodResolverSchema,
+  options?: Omit<UseFormProps<TFieldValues>, "resolver">
 ) {
-  const [formData, setFormData] = useState(initialFormData);
+  const form = useForm<TFieldValues>({
+    ...options,
+    resolver: zodResolver(schema) as Resolver<TFieldValues>,
+  });
+
   const [submitted, setSubmitted] = useState(false);
 
-  function setField<TKey extends keyof TFormData>(field: TKey, value: TFormData[TKey]) {
-    setFormData((current) => ({
-      ...current,
-      [field]: value
-    }));
-  }
-
-  function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
-
-    if (!formData.name || !formData.email || !formData.phone) {
-      alert(requiredMessage);
-      return;
-    }
-
-    setSubmitted(true);
-  }
-
   return {
-    formData,
-    handleSubmit,
-    setField,
+    ...form,
+    submitted,
     setSubmitted,
-    submitted
   };
 }

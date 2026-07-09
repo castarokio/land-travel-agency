@@ -1,0 +1,16 @@
+export const routes = {
+  home: "/",
+  studyAbroad: "/services/study-abroad",
+  tourism: "/services/tourism",
+  localTourism: "/services/tourism/local",
+  internationalTourism: "/services/tourism/international",
+  omra: "/services/omra",
+  universities: "/universities",
+  services: "/services",
+  about: "/about",
+  contact: "/contact",
+  programFinder: "/program-finder",
+  portal: "/portal",
+  login: "/login",
+  signup: "/signup",
+};

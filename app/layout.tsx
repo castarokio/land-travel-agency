@@ -1,11 +1,20 @@
 import type { Metadata } from "next";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { SiteInteractions } from "@/components/SiteInteractions";
+import { Plus_Jakarta_Sans } from "next/font/google";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { SiteInteractions } from "@/components/layout/SiteInteractions";
+import { ScrollToTop } from "@/components/layout/ScrollToTop";
 import "./globals.css";
 import "./styles/travel-pages.css";
 import "./styles/tourism-destinations.css";
 import "./styles/destination-detail.css";
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-sans",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Land Travel | Études, tourisme et Omra",
@@ -14,8 +23,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fr">
-      <body>
+    <html lang="fr" className={plusJakartaSans.variable}>
+      <body className="font-sans antialiased">
+        <ScrollToTop />
         <Header />
         <main>{children}</main>
         <Footer />

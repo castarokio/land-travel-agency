@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Mail, Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { siteConfig } from "@/data/site";
 
 export function Footer() {
   return (
@@ -24,9 +25,9 @@ export function Footer() {
         </div>
         <div className="footer-col-hover">
           <h3>Nous Contacter</h3>
-          <p className="contact-line"><Phone size={14} /> 07856342788</p>
-          <p className="contact-line"><Mail size={14} /> study@gmail.com</p>
-          <p>Park Street, Londres</p>
+          <p className="contact-line"><Phone size={14} /> {siteConfig.contact.phone}</p>
+          <p className="contact-line"><Mail size={14} /> {siteConfig.contact.email}</p>
+          <p className="contact-line"><MapPin size={14} /> {siteConfig.contact.address}</p>
         </div>
       </div>
     </footer>

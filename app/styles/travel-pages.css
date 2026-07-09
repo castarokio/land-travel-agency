@@ -794,6 +794,22 @@
     grid-template-columns: 1fr;
   }
   
+  .form-group.full-width {
+    grid-column: span 1;
+  }
+  
+  .inquiry-grid {
+    gap: 40px;
+  }
+  
+  .inquiry-form-card {
+    padding: 24px;
+  }
+  
+  .ziyarat-grid {
+    grid-template-columns: 1fr;
+  }
+  
   .gateway-card {
     height: 300px;
   }
@@ -803,4 +819,26 @@
   }
 }
 
+.form-group input.error,
+.form-group select.error,
+.form-group textarea.error {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2 !important;
+}
 
+.form-group input.error:focus,
+.form-group select.error:focus,
+.form-group textarea.error:focus {
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15) !important;
+  border-color: #ef4444 !important;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 11px;
+  margin-top: 4px;
+  font-weight: 600;
+  display: block;
+  text-transform: none;
+  letter-spacing: normal;
+}

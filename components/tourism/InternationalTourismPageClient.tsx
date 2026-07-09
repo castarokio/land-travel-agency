@@ -1,24 +1,53 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { ArrowLeft, Award, Check, Plane, Send, ShieldCheck, Star } from "lucide-react";
-import { MotionPageShell } from "@/components/MotionPageShell";
-import { useInquiryForm } from "@/components/inquiry/useInquiryForm";
+import { Award, Check, Plane, Send, ShieldCheck, Star } from "lucide-react";
+import { MotionPageShell } from "@/components/ui/MotionPageShell";
+import { useInquiryForm, tourismInquirySchema, TourismInquiryFields } from "@/components/inquiry/useInquiryForm";
+import { createWhatsappLink } from "@/lib/whatsapp";
 import { asset, intlPackages } from "@/lib/site-data";
+import { Container } from "@/components/ui/Container";
+import { Card } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { PageHero } from "@/components/ui/PageHero";
 
 export default function InternationalTourismPageClient() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [selectedPkg, setSelectedPkg] = useState(intlPackages[0].id);
-  const { formData, handleSubmit, setField, setSubmitted, submitted } = useInquiryForm({
-    name: "",
-    email: "",
-    phone: "",
-    travelers: "1",
-    date: "",
-    notes: ""
-  });
+  const { register, handleSubmit, formState: { errors }, setSubmitted, submitted, getValues, reset } = useInquiryForm(
+    tourismInquirySchema,
+    {
+      defaultValues: {
+        name: "",
+        email: "",
+        phone: "",
+        travelers: "1",
+        date: "",
+        notes: ""
+      }
+    }
+  );
+
+  const onSubmit = (data: TourismInquiryFields) => {
+    const activePkgObj = intlPackages.find(p => p.id === selectedPkg) || intlPackages[0];
+    
+    let message = `Bonjour Land Travel, je souhaite me renseigner sur le voyage organisé international :\n`;
+    message += `• Destination : ${activePkgObj.title}\n`;
+    message += `• Nom Complet : ${data.name}\n`;
+    message += `• E-mail : ${data.email}\n`;
+    message += `• Téléphone : ${data.phone}\n`;
+    message += `• Voyageurs : ${data.travelers === "1" ? "1 Personne" : data.travelers === "2" ? "2 Personnes" : data.travelers === "3-5" ? "Famille (3-5 pers.)" : "Groupe (6+ pers.)"}\n`;
+    message += `• Date de départ estimée : ${data.date}\n`;
+    if (data.notes) {
+      message += `• Précisions : ${data.notes}\n`;
+    }
+
+    const whatsappUrl = createWhatsappLink(message);
+    window.open(whatsappUrl, "_blank");
+    setSubmitted(true);
+  };
 
   const categories = ["All", "Europe", "Asia", "Tropical", "Adventure"];
 
@@ -37,29 +66,27 @@ export default function InternationalTourismPageClient() {
   const activePkgObj = intlPackages.find(p => p.id === selectedPkg) || intlPackages[0];
 
   return (
-    <MotionPageShell className="service-page-shell international-tourism-page-shell">
+    <MotionPageShell>
       {/* Hero Header */}
-      <section className="service-hero" style={{ backgroundImage: `url(${asset("intl-maldives-resort.webp")})` }}>
-        <div className="container">
-          <Link className="back-link" href="/" style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "var(--yellow)", fontSize: "12px", fontWeight: "700", marginBottom: "20px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-            <ArrowLeft size={14} /> Retour à l&apos;accueil
-          </Link>
-          <p className="section-label" style={{ color: "var(--yellow)" }}>Échappée Internationale</p>
-          <h1>Destinations de Rêve & Voyages Organisés</h1>
-          <p style={{ maxWidth: "600px", margin: "0 auto" }}>
-            Des plages sauvages des Maldives aux ruelles néons de Tokyo, en passant par les safaris du Serengeti, envolez-vous vers la destination de vos rêves en toute sérénité.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title="Destinations de Rêve & Voyages Organisés"
+        subtitle="Des plages sauvages des Maldives aux ruelles néons de Tokyo, en passant par les safaris du Serengeti, envolez-vous vers la destination de vos rêves en toute sérénité."
+        backgroundImage={asset("intl-maldives-resort.webp")}
+        overlayColor="bg-black/40"
+      />
 
       {/* Categories Filter Menu */}
-      <div className="container" style={{ marginTop: "54px" }}>
-        <div className="category-filter-nav">
+      <Container className="py-12">
+        <div className="flex flex-wrap items-center justify-center gap-3 mb-12">
           {categories.map((category) => (
             <button
               key={category}
-              className={`category-filter-btn ${activeCategory === category ? "active" : ""}`}
               onClick={() => setActiveCategory(category)}
+              className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
+                activeCategory === category
+                  ? "bg-primary text-white shadow-md shadow-primary/20"
+                  : "bg-primary/5 text-primary hover:bg-primary/10 border border-transparent"
+              }`}
             >
               {category === "All" ? "Toutes les destinations" : category}
             </button>
@@ -67,212 +94,301 @@ export default function InternationalTourismPageClient() {
         </div>
 
         {/* Packages Grid */}
-        <div className="packages-grid">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredPackages.map((pkg) => (
-            <article className="package-card" key={pkg.id}>
-              <div className="package-image-wrap">
-                <Image src={pkg.image} alt={pkg.title} width={560} height={340} />
-                <span className="package-badge-overlay" style={{ background: "var(--primary)", color: "#fff" }}>{pkg.category}</span>
-                <span className="package-duration-overlay">{pkg.duration}</span>
-              </div>
-              <div className="package-content">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-                  <span style={{ fontSize: "11px", color: "var(--primary)", fontWeight: "800", textTransform: "uppercase" }}>Vol Régulier Inclus</span>
-                  <div style={{ display: "flex", gap: "2px", color: "var(--yellow)" }}><Star size={12} fill="currentColor" /><Star size={12} fill="currentColor" /><Star size={12} fill="currentColor" /><Star size={12} fill="currentColor" /><Star size={12} fill="currentColor" /></div>
+            <Card key={pkg.id} className="flex flex-col h-full bg-white border border-border rounded-3xl" hoverable={true}>
+              <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted/10">
+                <Image
+                  src={pkg.image}
+                  alt={pkg.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                />
+                <div className="absolute top-4 left-4 z-10 flex gap-2">
+                  <Badge variant="primary">{pkg.category}</Badge>
+                  <Badge variant="outline" className="bg-white/95 backdrop-blur-sm">{pkg.duration}</Badge>
                 </div>
-                <h3>{pkg.title}</h3>
-                <p className="package-description">{pkg.description}</p>
-                
-                <h4 style={{ fontSize: "11px", textTransform: "uppercase", color: "var(--text)", marginBottom: "12px", fontWeight: "700", letterSpacing: "0.04em" }}>Points Forts du Voyage :</h4>
-                <ul className="package-features">
-                  {pkg.details.map((detail, idx) => (
-                    <li key={idx}><Check size={14} /> <span>{detail}</span></li>
-                  ))}
-                </ul>
-
-                <div style={{ background: "#f8fafc", padding: "12px 16px", borderRadius: "10px", marginBottom: "24px", border: "1px solid var(--border)" }}>
-                  <span style={{ fontSize: "9px", textTransform: "uppercase", fontWeight: "800", color: "var(--muted)", display: "block", marginBottom: "6px" }}>Compris dans le tarif</span>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-                    {pkg.inclusions.map((inc, idx) => (
-                      <span key={idx} style={{ fontSize: "10px", background: "#fff", border: "1px solid rgba(0,82,204,0.08)", padding: "4px 8px", borderRadius: "5px", fontWeight: "600", color: "#333" }}>
-                        ✓ {inc}
-                      </span>
+              </div>
+              
+              <div className="flex flex-col flex-grow p-6">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-xs uppercase font-extrabold tracking-widest text-primary">
+                    Vol Régulier Inclus
+                  </span>
+                  <div className="flex gap-0.5 text-yellow">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={12} className="fill-current text-orange" />
                     ))}
                   </div>
                 </div>
-
-                <div className="package-footer">
-                  <div className="package-price-wrap">
-                    <span className="package-price-label">Tarif tout compris</span>
-                    <span className="package-price-value">{pkg.price}</span>
+                
+                <h3 className="text-xl font-bold text-text mb-3">
+                  {pkg.title}
+                </h3>
+                
+                <p className="text-sm text-muted mb-6 line-clamp-3">
+                  {pkg.description}
+                </p>
+                
+                <div className="mb-6">
+                  <h4 className="text-xs uppercase tracking-wider font-extrabold text-text mb-2.5">
+                    Points Forts du Voyage :
+                  </h4>
+                  <ul className="space-y-1.5 mb-5">
+                    {pkg.details.map((detail, idx) => (
+                      <li key={idx} className="flex items-start gap-2 text-xs text-muted">
+                        <Check size={14} className="text-primary shrink-0 mt-0.5" />
+                        <span>{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  {pkg.inclusions && (
+                    <div className="bg-primary/5 p-4 rounded-xl border border-primary/10">
+                      <span className="block text-[9px] uppercase tracking-wider font-extrabold text-muted mb-2">
+                        Compris dans le tarif
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {pkg.inclusions.map((inc, idx) => (
+                          <span
+                            key={idx}
+                            className="text-[10px] bg-white border border-border px-2 py-0.5 rounded font-semibold text-text"
+                          >
+                            ✓ {inc}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="pt-5 border-t border-border flex items-center justify-between mt-auto">
+                  <div>
+                    <span className="block text-[10px] uppercase tracking-wider text-muted font-bold">
+                      Tarif tout compris
+                    </span>
+                    <span className="text-xl font-extrabold text-primary">
+                      {pkg.price}
+                    </span>
                   </div>
-                  <button className="button button-small" onClick={() => handleSelectPkg(pkg.id)}>
+                  
+                  <Button
+                    onClick={() => handleSelectPkg(pkg.id)}
+                    variant="primary"
+                    size="sm"
+                  >
                     Demander un devis
-                  </button>
+                  </Button>
                 </div>
               </div>
-            </article>
+            </Card>
           ))}
         </div>
-      </div>
+      </Container>
 
       {/* Inquiry Form Section */}
-      <section className="inquiry-section" id="intl-inquiry-section">
-        <div className="container">
-          <div className="inquiry-grid">
+      <section className="py-20 bg-cream/20 border-t border-border" id="intl-inquiry-section">
+        <Container>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             {/* Left Col - Benefits */}
-            <div className="inquiry-info">
-              <span className="section-label">Devis sans engagement</span>
-              <h2>Réservez vos vols & hôtels</h2>
-              <p>
+            <div className="lg:col-span-5 flex flex-col">
+              <span className="text-xs uppercase font-extrabold tracking-widest text-primary mb-3">
+                Devis sans engagement
+              </span>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-text mb-6">
+                Réservez vos vols & hôtels
+              </h2>
+              <p className="text-muted leading-relaxed mb-8">
                 Notre équipe de conseillers s&apos;occupe de l&apos;intégralité de vos démarches : réservation des billets, hébergements haut de gamme, transferts aéroport et assistance visa touristique si requise.
               </p>
 
-              <div className="inquiry-benefits">
-                <div className="inquiry-benefit-item">
-                  <div className="inquiry-benefit-icon"><Plane size={18} /></div>
-                  <div className="inquiry-benefit-text">
-                    <h4>Partenariats Aériens VIP</h4>
-                    <p>Accords de tarifs négociés avec les plus grandes compagnies aériennes régulières.</p>
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <Plane size={20} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-text mb-1">Partenariats Aériens VIP</h4>
+                    <p className="text-sm text-muted">Accords de tarifs négociés avec les plus grandes compagnies aériennes régulières.</p>
                   </div>
                 </div>
 
-                <div className="inquiry-benefit-item">
-                  <div className="inquiry-benefit-icon"><ShieldCheck size={18} /></div>
-                  <div className="inquiry-benefit-text">
-                    <h4>Voyage 100% Assuré</h4>
-                    <p>Possibilité d&apos;inclure une assurance multirisque annulation et rapatriement de premier plan.</p>
+                <div className="flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <ShieldCheck size={20} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-text mb-1">Voyage 100% Assuré</h4>
+                    <p className="text-sm text-muted">Possibilité d&apos;inclure une assurance multirisque annulation et rapatriement de premier plan.</p>
                   </div>
                 </div>
 
-                <div className="inquiry-benefit-item">
-                  <div className="inquiry-benefit-icon"><Award size={18} /></div>
-                  <div className="inquiry-benefit-text">
-                    <h4>Hôtels Sélectionnés</h4>
-                    <p>Établissements 4 et 5 étoiles audités régulièrement pour garantir la meilleure literie et hygiène.</p>
+                <div className="flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <Award size={20} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-text mb-1">Hôtels Sélectionnés</h4>
+                    <p className="text-sm text-muted">Établissements 4 et 5 étoiles audités régulièrement pour garantir la meilleure literie et hygiène.</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Right Col - Form */}
-            <div className="inquiry-form-card">
-              {!submitted ? (
-                <form onSubmit={handleSubmit}>
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label htmlFor="name">Nom Complet *</label>
-                      <input 
-                        type="text" 
-                        id="name" 
-                        required 
-                        value={formData.name}
-                        onChange={(e) => setField("name", e.target.value)}
-                        placeholder="Alice Martin" 
-                      />
+            <div className="lg:col-span-7">
+              <Card glassmorphic className="p-6 md:p-8 border border-border shadow-premium/5 bg-white rounded-3xl" hoverable={false}>
+                {!submitted ? (
+                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="flex flex-col">
+                        <label htmlFor="name" className="text-xs uppercase font-extrabold tracking-wider text-muted mb-2">
+                          Nom Complet *
+                        </label>
+                        <input 
+                          type="text" 
+                          id="name" 
+                          {...register("name")}
+                          placeholder="Alice Martin"
+                          className={`w-full px-4 py-3 rounded-xl border border-border bg-cream/5 text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors ${errors.name ? "error" : ""}`}
+                        />
+                        {errors.name && (
+                          <span className="error-message">{errors.name.message}</span>
+                        )}
+                      </div>
+                      <div className="flex flex-col">
+                        <label htmlFor="email" className="text-xs uppercase font-extrabold tracking-wider text-muted mb-2">
+                          Adresse E-mail *
+                        </label>
+                        <input 
+                          type="email" 
+                          id="email" 
+                          {...register("email")}
+                          placeholder="alice.martin@example.com"
+                          className={`w-full px-4 py-3 rounded-xl border border-border bg-cream/5 text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors ${errors.email ? "error" : ""}`}
+                        />
+                        {errors.email && (
+                          <span className="error-message">{errors.email.message}</span>
+                        )}
+                      </div>
                     </div>
-                    <div className="form-group">
-                      <label htmlFor="email">Adresse E-mail *</label>
-                      <input 
-                        type="email" 
-                        id="email" 
-                        required 
-                        value={formData.email}
-                        onChange={(e) => setField("email", e.target.value)}
-                        placeholder="alice.martin@example.com" 
-                      />
-                    </div>
-                  </div>
 
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label htmlFor="phone">Téléphone *</label>
-                      <input 
-                        type="tel" 
-                        id="phone" 
-                        required 
-                        value={formData.phone}
-                        onChange={(e) => setField("phone", e.target.value)}
-                        placeholder="+33 7 98 76 54 32" 
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="flex flex-col">
+                        <label htmlFor="phone" className="text-xs uppercase font-extrabold tracking-wider text-muted mb-2">
+                          Téléphone *
+                        </label>
+                        <input 
+                          type="tel" 
+                          id="phone" 
+                          {...register("phone")}
+                          placeholder="+33 7 98 76 54 32"
+                          className={`w-full px-4 py-3 rounded-xl border border-border bg-cream/5 text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors ${errors.phone ? "error" : ""}`}
+                        />
+                        {errors.phone && (
+                          <span className="error-message">{errors.phone.message}</span>
+                        )}
+                      </div>
+                      <div className="flex flex-col">
+                        <label htmlFor="pkg" className="text-xs uppercase font-extrabold tracking-wider text-muted mb-2">
+                          Destination souhaitée
+                        </label>
+                        <select 
+                          id="pkg"
+                          value={selectedPkg}
+                          onChange={(e) => setSelectedPkg(e.target.value)}
+                          className="w-full px-4 py-3 rounded-xl border border-border bg-white text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors cursor-pointer"
+                        >
+                          {intlPackages.map((p) => (
+                            <option key={p.id} value={p.id}>{p.title}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="flex flex-col">
+                        <label htmlFor="travelers" className="text-xs uppercase font-extrabold tracking-wider text-muted mb-2">
+                          Nombre de voyageurs
+                        </label>
+                        <select 
+                          id="travelers"
+                          {...register("travelers")}
+                          className={`w-full px-4 py-3 rounded-xl border border-border bg-white text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors cursor-pointer ${errors.travelers ? "error" : ""}`}
+                        >
+                          <option value="1">1 Personne</option>
+                          <option value="2">2 Personnes (Couple)</option>
+                          <option value="3-5">Famille (3-5 pers.)</option>
+                          <option value="6+">Groupe (6+ pers.)</option>
+                        </select>
+                        {errors.travelers && (
+                          <span className="error-message">{errors.travelers.message}</span>
+                        )}
+                      </div>
+                      <div className="flex flex-col">
+                        <label htmlFor="date" className="text-xs uppercase font-extrabold tracking-wider text-muted mb-2">
+                          Date estimée de départ
+                        </label>
+                        <input 
+                          type="date" 
+                          id="date" 
+                          {...register("date")}
+                          className={`w-full px-4 py-3 rounded-xl border border-border bg-cream/5 text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors cursor-pointer ${errors.date ? "error" : ""}`}
+                        />
+                        {errors.date && (
+                          <span className="error-message">{errors.date.message}</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col">
+                      <label htmlFor="notes" className="text-xs uppercase font-extrabold tracking-wider text-muted mb-2">
+                        Précisions supplémentaires (Hôtel de préférence, classe affaire, escales...)
+                      </label>
+                      <textarea 
+                        id="notes" 
+                        rows={3} 
+                        {...register("notes")}
+                        placeholder="Ex: lit double requis, hôtel vue mer ou centre-ville, préférence de vol direct..."
+                        className={`w-full px-4 py-3 rounded-xl border border-border bg-cream/5 text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors ${errors.notes ? "error" : ""}`}
                       />
+                      {errors.notes && (
+                        <span className="error-message">{errors.notes.message}</span>
+                      )}
                     </div>
-                    <div className="form-group">
-                      <label htmlFor="pkg">Destination souhaitée</label>
-                      <select 
-                        id="pkg"
-                        value={selectedPkg}
-                        onChange={(e) => setSelectedPkg(e.target.value)}
-                      >
-                        {intlPackages.map((p) => (
-                          <option key={p.id} value={p.id}>{p.title}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
 
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label htmlFor="travelers">Nombre de voyageurs</label>
-                      <select 
-                        id="travelers"
-                        value={formData.travelers}
-                        onChange={(e) => setField("travelers", e.target.value)}
-                      >
-                        <option value="1">1 Personne</option>
-                        <option value="2">2 Personnes (Couple)</option>
-                        <option value="3-5">Famille (3-5 pers.)</option>
-                        <option value="6+">Groupe (6+ pers.)</option>
-                      </select>
+                    <Button type="submit" variant="primary" className="w-full shadow-lg">
+                      <Send size={16} className="mr-2" /> Envoyer ma demande de voyage
+                    </Button>
+                  </form>
+                ) : (
+                  <div className="text-center py-8 flex flex-col items-center">
+                    <div className="w-16 h-16 bg-primary/10 text-primary flex items-center justify-center rounded-full mb-4">
+                      <Check size={28} />
                     </div>
-                    <div className="form-group">
-                      <label htmlFor="date">Date estimée de départ</label>
-                      <input 
-                        type="date" 
-                        id="date" 
-                        value={formData.date}
-                        onChange={(e) => setField("date", e.target.value)}
-                      />
+                    <h3 className="text-xl md:text-2xl font-bold text-text mb-2">Demande Enregistrée !</h3>
+                    <p className="text-sm md:text-base text-muted mb-6">
+                      Merci <strong>{getValues("name")}</strong>. Votre dossier pour le package international <strong>&quot;{activePkgObj.title}&quot;</strong> a été transmis à notre service de réservation.
+                    </p>
+                    <div className="bg-cream/10 border border-dashed border-border rounded-2xl p-6 w-full text-left text-sm mb-6 space-y-2 text-text">
+                      <div><strong>Package :</strong> {activePkgObj.title} ({activePkgObj.duration})</div>
+                      <div><strong>Voyageurs :</strong> {getValues("travelers") === "2" ? "2 personnes (Couple)" : getValues("travelers") === "1" ? "1 voyageur" : getValues("travelers")}</div>
+                      {getValues("date") && <div><strong>Date :</strong> {getValues("date")}</div>}
+                      <div><strong>Traitement :</strong> Un expert en vols internationaux étudie votre demande pour vous proposer le meilleur tarif et le meilleur itinéraire. Réponse sous 24h.</div>
                     </div>
+                    <Button variant="outline" size="md" onClick={() => {
+                      reset();
+                      setSubmitted(false);
+                    }}>
+                      Calculer un autre tarif
+                    </Button>
                   </div>
-
-                  <div className="form-group full-width">
-                    <label htmlFor="notes">Précisions supplémentaires (Hôtel de préférence, classe affaire, escales...)</label>
-                    <textarea 
-                      id="notes" 
-                      rows={3} 
-                      value={formData.notes}
-                      onChange={(e) => setField("notes", e.target.value)}
-                      placeholder="Ex: lit double requis, hôtel vue mer ou centre-ville, préférence de vol direct..."
-                    />
-                  </div>
-
-                  <button className="button" type="submit" style={{ width: "100%", marginTop: "8px" }}>
-                    <Send size={16} /> Envoyer ma demande de voyage
-                  </button>
-                </form>
-              ) : (
-                <div className="form-success-box">
-                  <div className="form-success-icon">
-                    <Check size={28} />
-                  </div>
-                  <h3>Demande Enregistrée !</h3>
-                  <p style={{ marginBottom: "20px" }}>
-                    Merci <strong>{formData.name}</strong>. Votre dossier pour le package international <strong>&quot;{activePkgObj.title}&quot;</strong> a été transmis à notre service de réservation.
-                  </p>
-                  <div style={{ background: "#f8fafc", border: "1px dashed var(--border)", borderRadius: "12px", padding: "16px", width: "100%", fontSize: "12px", textAlign: "left", marginBottom: "24px", color: "var(--text)" }}>
-                    <div style={{ marginBottom: "6px" }}><strong>Package :</strong> {activePkgObj.title} ({activePkgObj.duration})</div>
-                    <div style={{ marginBottom: "6px" }}><strong>Voyageurs :</strong> {formData.travelers === "2" ? "2 personnes (Couple)" : formData.travelers === "1" ? "1 voyageur" : formData.travelers}</div>
-                    {formData.date && <div style={{ marginBottom: "6px" }}><strong>Date :</strong> {formData.date}</div>}
-                    <div><strong>Traitement :</strong> Un expert en vols internationaux étudie votre demande pour vous proposer le meilleur tarif et le meilleur itinéraire. Réponse sous 24h.</div>
-                  </div>
-                  <button className="button button-ghost" onClick={() => setSubmitted(false)}>
-                    Calculer un autre tarif
-                  </button>
-                </div>
-              )}
+                )}
+              </Card>
             </div>
           </div>
-        </div>
+        </Container>
       </section>
     </MotionPageShell>
   );

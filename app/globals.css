@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 @import "./styles/core/base.css";
 @import "./styles/core/shell.css";
 @import "./styles/core/home-primary.css";
