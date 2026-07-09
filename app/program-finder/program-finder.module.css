@@ -10,10 +10,10 @@
   box-sizing: border-box;
   width: 100%;
   height: 100vh;
-  min-height: 760px;
+  min-height: 720px;
   display: grid;
-  place-items: center;
-  padding: 54px 22px;
+  place-items: stretch;
+  padding: 0;
   overflow: hidden;
   overflow-anchor: none;
   background:
@@ -25,15 +25,14 @@
 .cardShell {
   box-sizing: border-box;
   display: grid;
-  grid-template-columns: 430px minmax(0, 1fr);
-  width: min(1180px, 100%);
-  height: min(860px, calc(100vh - 44px));
-  min-height: 680px;
-  max-height: none;
+  grid-template-columns: minmax(360px, 32vw) minmax(0, 1fr);
+  width: 100%;
+  height: 100vh;
+  min-height: 720px;
   overflow: hidden;
-  border-radius: 28px;
+  border-radius: 0;
   background: #ffffff;
-  box-shadow: 0 28px 90px rgba(25, 43, 72, 0.2);
+  box-shadow: none;
 }
 
 .rail {
@@ -42,15 +41,17 @@
   flex-direction: column;
   justify-content: center;
   overflow: hidden;
-  padding: 46px 58px;
-  background: linear-gradient(180deg, rgba(11, 94, 215, 0.96), rgba(23, 74, 152, 0.96));
+  padding: clamp(34px, 5vw, 72px);
+  background:
+    radial-gradient(circle at 72% 30%, rgba(255, 255, 255, 0.18), transparent 30%),
+    linear-gradient(180deg, rgba(11, 94, 215, 1), rgba(23, 74, 152, 1));
   color: #ffffff;
 }
 
 .backLink {
   position: absolute;
-  top: 32px;
-  left: 34px;
+  top: clamp(26px, 4vw, 46px);
+  left: clamp(28px, 4vw, 54px);
   z-index: 3;
   display: inline-flex;
   align-items: center;
@@ -75,30 +76,31 @@
 }
 
 .orbitOne {
-  width: 560px;
-  height: 260px;
-  left: -90px;
-  top: 220px;
+  width: 78vw;
+  height: 33vw;
+  left: -18vw;
+  top: 28vh;
   transform: rotate(-10deg);
 }
 
 .orbitTwo {
-  width: 430px;
-  height: 430px;
-  right: -180px;
-  bottom: -120px;
+  width: 44vw;
+  height: 44vw;
+  right: -20vw;
+  bottom: -14vw;
 }
 
 .studentShape {
   position: absolute;
-  left: 160px;
-  top: 180px;
+  left: 50%;
+  top: 50%;
   display: grid;
   place-items: center;
-  width: 180px;
-  height: 240px;
+  width: min(240px, 18vw);
+  height: min(320px, 24vw);
   border-radius: 90px 90px 40px 40px;
-  background: rgba(0, 0, 0, 0.18);
+  background: rgba(0, 0, 0, 0.13);
+  transform: translate(-50%, -50%);
 }
 
 .progressList {
@@ -170,7 +172,7 @@
   flex-direction: column;
   min-width: 0;
   min-height: 0;
-  padding: 42px 62px 48px;
+  padding: clamp(34px, 5vw, 72px) clamp(42px, 7vw, 112px);
   overflow-anchor: none;
 }
 
@@ -178,7 +180,7 @@
   display: flex;
   justify-content: space-between;
   gap: 18px;
-  margin-bottom: 58px;
+  margin-bottom: clamp(30px, 5vh, 56px);
 }
 
 .panelTop p {
@@ -218,40 +220,40 @@
 }
 
 .stepContent h1 {
-  max-width: 560px;
+  max-width: 760px;
   margin: 0;
   color: var(--finder-ink);
-  font-size: clamp(34px, 4vw, 54px);
+  font-size: clamp(42px, 4.8vw, 68px);
   font-weight: 900;
   line-height: 1.08;
   letter-spacing: 0;
 }
 
 .description {
-  max-width: 560px;
-  margin: 18px 0 34px;
+  max-width: 760px;
+  margin: 16px 0 26px;
   color: var(--finder-muted);
-  font-size: 17px;
+  font-size: clamp(17px, 1.35vw, 21px);
   line-height: 1.7;
 }
 
 .optionGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(210px, 1fr));
-  gap: 18px;
-  max-width: 650px;
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+  gap: 20px;
+  max-width: 900px;
 }
 
 .optionGrid button {
   position: relative;
-  min-height: 148px;
+  min-height: 162px;
   border: 1px solid #cfd7e3;
   border-radius: 8px;
   background: #ffffff;
   color: var(--finder-ink);
   cursor: pointer;
-  padding: 24px 18px;
-  text-align: center;
+  padding: 28px 24px;
+  text-align: left;
   transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
 
@@ -263,15 +265,15 @@
 
 .optionGrid strong {
   display: block;
-  margin: 8px 0 9px;
-  font-size: 17px;
+  margin: 8px 0 10px;
+  font-size: 19px;
 }
 
 .optionGrid p {
   margin: 0;
   color: var(--finder-muted);
-  font-size: 13px;
-  line-height: 1.45;
+  font-size: 14px;
+  line-height: 1.55;
 }
 
 .selectedCard {
@@ -293,7 +295,7 @@
 }
 
 .imageOptionGrid button {
-  min-height: 238px;
+  min-height: 282px;
   padding: 12px 12px 18px;
 }
 
@@ -301,7 +303,7 @@
   position: relative;
   display: block;
   width: 100%;
-  height: 118px;
+  height: 156px;
   overflow: hidden;
   border-radius: 7px;
   margin-bottom: 14px;
@@ -315,9 +317,9 @@
 
 .languageGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(220px, 1fr));
-  gap: 12px;
-  max-width: 760px;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 16px;
+  max-width: 930px;
 }
 
 .languageGrid button {
@@ -326,8 +328,8 @@
   gap: 7px;
   border: 1px solid var(--finder-line);
   border-radius: 8px;
-  min-height: 106px;
-  padding: 17px 42px 17px 17px;
+  min-height: 126px;
+  padding: 22px 52px 22px 22px;
   background: #ffffff;
   color: var(--finder-muted);
   text-align: left;
@@ -342,13 +344,13 @@
 
 .languageGrid strong {
   color: var(--finder-ink);
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 900;
 }
 
 .languageGrid small {
   color: var(--finder-muted);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   line-height: 1.5;
 }
@@ -371,7 +373,7 @@
   justify-content: space-between;
   gap: 24px;
   align-items: center;
-  margin-top: 44px;
+  margin-top: clamp(28px, 5vh, 54px);
 }
 
 .summary {
@@ -437,7 +439,7 @@
   grid-auto-columns: minmax(255px, 295px);
   grid-auto-flow: column;
   gap: 18px;
-  max-width: 760px;
+  max-width: 980px;
   overflow-x: auto;
   padding: 4px 6px 18px 0;
   scroll-snap-type: x proximity;
@@ -495,7 +497,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
-  max-width: 760px;
+  max-width: 980px;
   margin: 0 0 24px;
 }
 
@@ -539,6 +541,8 @@
     grid-template-columns: 1fr;
     height: auto;
     min-height: 0;
+    border-radius: 18px;
+    box-shadow: 0 18px 60px rgba(25, 43, 72, 0.16);
   }
 
   .rail {
@@ -625,6 +629,10 @@
   .optionGrid {
     grid-template-columns: 1fr;
     gap: 16px;
+  }
+
+  .optionGrid button {
+    text-align: left;
   }
 
   .languageGrid,
