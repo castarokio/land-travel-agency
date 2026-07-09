@@ -34,6 +34,11 @@ interface CountryPageLayoutProps {
     language: string;
     averageTuition: string;
     visaSuccessRate: string;
+    availableMajors?: {
+      name: string;
+      minBac: string;
+      note: string;
+    }[];
   };
   detail: {
     category?: string;
@@ -81,6 +86,7 @@ interface CountryPageLayoutProps {
 const tabs = [
   { href: "#overview", label: "Overview" },
   { href: "#services", label: "Services" },
+  { href: "#majors", label: "Majors & BAC" },
   { href: "#requirements", label: "Conditions" },
   { href: "#documents", label: "Documents" },
   { href: "#process", label: "Suivi" },
@@ -239,6 +245,24 @@ export function CountryPageLayout({ countryInfo, detail, countryUnis }: CountryP
                   <article key={service}>
                     <CheckCircle2 size={19} aria-hidden="true" />
                     <p>{service}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <section className={styles.sectionBlock} id="majors">
+              <SectionHeading eyebrow="Majors disponibles" title={`Minimum BAC indicatif pour ${countryInfo.name}.`} />
+              <p className={styles.sectionIntro}>
+                Ces moyennes sont des repères minimums pour orienter le choix du programme. L&apos;admission finale dépend aussi des notes par matière, du test de langue, du budget et du dossier complet.
+              </p>
+              <div className={styles.majorGrid}>
+                {(countryInfo.availableMajors ?? []).map((major) => (
+                  <article key={major.name}>
+                    <span>{major.minBac}</span>
+                    <div>
+                      <h3>{major.name}</h3>
+                      <p>{major.note}</p>
+                    </div>
                   </article>
                 ))}
               </div>

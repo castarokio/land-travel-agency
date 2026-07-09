@@ -439,6 +439,7 @@ export default async function CountryUniversitiesPage({ params }: CountryPagePro
     language: countryInfo.language || "",
     averageTuition: countryInfo.averageTuition || "",
     visaSuccessRate: countryInfo.visaSuccessRate || "Élevé",
+    availableMajors: countryInfo.availableMajors ?? [],
   };
 
   return (

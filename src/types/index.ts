@@ -38,6 +38,11 @@ export interface StudyCountry {
   language: string;
   visaSuccessRate?: string;
   requirements?: string[];
+  availableMajors?: {
+    name: string;
+    minBac: string;
+    note: string;
+  }[];
 }
 
 export interface Destination {

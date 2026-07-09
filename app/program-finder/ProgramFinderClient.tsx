@@ -178,6 +178,18 @@ const baseSteps = [
     ],
   },
   {
+    id: "bacAverage",
+    label: "BAC",
+    title: "Quelle est votre moyenne au BAC ?",
+    description: "Cette moyenne nous aide à éviter les destinations ou majors irréalistes et à proposer une stratégie plus honnête.",
+    options: [
+      { label: "Moins de 10/20", detail: "Il faudra viser des parcours préparatoires ou des options très accessibles." },
+      { label: "10 - 11.99/20", detail: "Options possibles, mais le choix du pays et du major doit être prudent." },
+      { label: "12 - 13.99/20", detail: "Profil équilibré pour plusieurs destinations et majors." },
+      { label: "14/20 ou plus", detail: "Profil fort pour les programmes sélectifs et les bourses possibles." },
+    ],
+  },
+  {
     id: "field",
     label: "Domaine",
     title: "Quel domaine vous attire le plus pour votre futur ?",
@@ -245,6 +257,7 @@ type SingleStepId = Exclude<StepId, "language" | "languageTest">;
 type Answers = {
   goal: string;
   level: string;
+  bacAverage: string;
   field: string;
   budget: string;
   language: string[];
@@ -257,6 +270,7 @@ type Answers = {
 const initialAnswers: Answers = {
   goal: "Je ne sais pas quoi étudier",
   level: "Bachelor",
+  bacAverage: "12 - 13.99/20",
   field: "Informatique & IA",
   budget: "Budget équilibré",
   language: ["Français", "Anglais"],
@@ -368,7 +382,7 @@ function createInsight(answers: Answers) {
 
   return {
     headline: `${answers.level} en ${answers.field} avec ${country} comme point de départ`,
-    answer: `Votre profil ne doit pas être traité comme une simple recherche de programme. Le bon choix dépend surtout de votre budget (${answers.budget.toLowerCase()}), de votre priorité (${answers.priority.toLowerCase()}) et de la langue. La prochaine étape est de ${languagePlan}, puis de comparer 3 pays au lieu de choisir trop vite.`,
+    answer: `Votre profil ne doit pas être traité comme une simple recherche de programme. Le bon choix dépend surtout de votre moyenne BAC (${answers.bacAverage}), de votre budget (${answers.budget.toLowerCase()}), de votre priorité (${answers.priority.toLowerCase()}) et de la langue. La prochaine étape est de ${languagePlan}, puis de comparer 3 pays au lieu de choisir trop vite.`,
     challenge: answers.destination !== "Je suis ouvert" && answers.budget === "Budget serré"
       ? `Votre pays rêvé est important, mais il faut aussi garder une option alternative si ${answers.destination} dépasse le budget réel.`
       : "Votre idée est cohérente, mais elle doit être testée avec les conditions d'admission, le coût total et les délais de visa.",
@@ -411,6 +425,7 @@ export function ProgramFinderClient() {
   const summary = useMemo(
     () => [
       answers.level,
+      answers.bacAverage,
       answers.field,
       answers.budget,
       answers.destination,
