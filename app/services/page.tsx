@@ -1,10 +1,11 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, CircleArrowDown, MapPin, CalendarDays, Plus, Minus } from "lucide-react";
+import { ArrowUpRight, CircleArrowDown, Plus, Minus } from "lucide-react";
 import { MotionPageShell } from "@/components/ui/MotionPageShell";
 import { asset } from "@/lib/assets";
 import { routes } from "@/constants/routes";
+import { ServicePathShowcase } from "./ServicePathShowcase";
 import styles from "./services.module.css";
 
 export const metadata: Metadata = {
@@ -17,21 +18,25 @@ const serviceTypes = [
     title: "Study Abroad Consulting",
     description: "Country selection, university shortlists, admissions, language test planning, and visa dossier support.",
     href: routes.studyAbroad,
+    image: asset("hero-study-consultation.webp"),
   },
   {
     title: "Tourism Packages",
     description: "Local escapes, international holidays, hotel coordination, flight booking, and custom travel plans.",
     href: routes.tourism,
+    image: asset("intl-swiss-alps.webp"),
   },
   {
     title: "Omra Travel",
     description: "Visa handling, hotel booking near Haram, transfers, Ziyarat planning, and guided departure support.",
     href: routes.omra,
+    image: asset("Kaaba pilgrims umrah.webp"),
   },
   {
     title: "Visa & Departure Support",
     description: "Document checklists, appointment preparation, insurance, bookings, and final travel briefing.",
     href: routes.contact,
+    image: asset("airport.webp"),
   },
 ];
 
@@ -60,6 +65,8 @@ const projects = [
     image: asset("Canada university campus.webp"),
     place: "Paris, France",
     year: "2026",
+    href: routes.studyAbroad,
+    cta: "Explore study abroad",
   },
   {
     title: "Maldives Family Holiday",
@@ -67,6 +74,8 @@ const projects = [
     image: asset("intl-maldives-resort.webp"),
     place: "Maldives",
     year: "2026",
+    href: routes.tourism,
+    cta: "Browse tourism",
   },
   {
     title: "Omra Comfort Departure",
@@ -74,6 +83,8 @@ const projects = [
     image: asset("Kaaba pilgrims umrah.webp"),
     place: "Makkah, Saudi Arabia",
     year: "2026",
+    href: routes.omra,
+    cta: "Plan Omra",
   },
   {
     title: "Local Sahara Experience",
@@ -81,6 +92,8 @@ const projects = [
     image: asset("local-desert-sunset.webp"),
     place: "Djanet, Algeria",
     year: "2026",
+    href: routes.localTourism,
+    cta: "See local trips",
   },
 ];
 
@@ -146,12 +159,10 @@ export default function ServicesPage() {
                   <strong>{service.title}</strong>
                   <small>{service.description}</small>
                 </span>
-                {index === 1 ? (
-                  <span className={styles.typePreview}>
-                    <Image src={asset("intl-swiss-alps.webp")} alt="" width={300} height={160} />
-                    <em>Learn more <ArrowUpRight size={14} /></em>
-                  </span>
-                ) : null}
+                <span className={styles.typePreview}>
+                  <Image src={service.image} alt="" width={300} height={160} />
+                  <em>Learn more <ArrowUpRight size={14} /></em>
+                </span>
                 <b>{String(index + 1).padStart(2, "0")}</b>
               </Link>
             ))}
@@ -180,22 +191,7 @@ export default function ServicesPage() {
           </Link>
         </section>
 
-        <section className={styles.projects} aria-labelledby="projects-title">
-          <h2 id="projects-title">Selected Service Paths</h2>
-          <div className={styles.projectGrid}>
-            {projects.map((project) => (
-              <article className={styles.projectCard} key={project.title}>
-                <Image src={project.image} alt={project.title} width={640} height={420} />
-                <h3>{project.title}</h3>
-                <p>{project.description}</p>
-                <footer>
-                  <span><MapPin size={13} /> {project.place}</span>
-                  <span><CalendarDays size={13} /> {project.year}</span>
-                </footer>
-              </article>
-            ))}
-          </div>
-        </section>
+        <ServicePathShowcase projects={projects} />
 
         <section className={styles.faq} aria-labelledby="faq-title">
           <h2 id="faq-title">Questions About Our Service</h2>

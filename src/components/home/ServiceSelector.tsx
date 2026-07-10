@@ -35,6 +35,9 @@ export function ServiceSelector() {
         <div className="quick-service-heading">
           <div>
             <p className="section-label">Quick service selector</p>
+            <Link className="quick-service-browse" href={routes.services}>
+              Browse services <ArrowRight size={17} />
+            </Link>
           </div>
           <h2 id="quick-service-title">Choose your path</h2>
         </div>

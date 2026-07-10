@@ -61,6 +61,11 @@
   margin-bottom: 28px;
 }
 
+.quick-service-heading > div {
+  display: grid;
+  gap: 14px;
+}
+
 .quick-service-heading h2 {
   max-width: 520px;
   margin: 0;
@@ -69,6 +74,29 @@
   font-size: clamp(30px, 4vw, 46px);
   font-weight: 900;
   line-height: 1.02;
+}
+
+.quick-service-browse {
+  width: fit-content;
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: #0052cc;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 900;
+  text-decoration: none;
+  box-shadow: 0 18px 38px rgba(0, 82, 204, 0.25);
+  transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.quick-service-browse:hover {
+  transform: translateY(-3px);
+  background: #003e9f;
+  box-shadow: 0 24px 48px rgba(0, 82, 204, 0.32);
 }
 
 .quick-service-grid {
