@@ -80,12 +80,22 @@ export function ClosingSection() {
       </div>
 
       <div className={styles.wordmarkWrap}>
-        <h2
-          id="closing-section-title"
-          className={`${styles.wordmark} text-[clamp(72px,15vw,220px)] font-bold leading-[0.8] tracking-[-0.07em]`}
-        >
-          LAND TRAVEL
-        </h2>
+        <div className={styles.wordmarkLockup}>
+          <Image
+            src="/assets/landtravel-logo.png"
+            alt=""
+            width={1254}
+            height={1254}
+            className={styles.wordmarkLogo}
+            sizes="clamp(72px,15vw,220px)"
+          />
+          <h2
+            id="closing-section-title"
+            className={`${styles.wordmark} text-[clamp(72px,15vw,220px)] font-bold leading-[0.8] tracking-[-0.07em]`}
+          >
+            LAND TRAVEL
+          </h2>
+        </div>
       </div>
 
       <Link className={styles.ctaRail} href="/services/tourism/international" aria-label="Find your next destination">

@@ -106,7 +106,7 @@
 .showreel {
   position: absolute;
   right: 0;
-  bottom: 0;
+  bottom: 32px;
   width: 160px;
   aspect-ratio: 1.55 / 1;
   overflow: hidden;
@@ -158,10 +158,27 @@
   padding: 0 clamp(16px, 2.1vw, 30px);
 }
 
+.wordmarkLockup {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(18px, 2.3vw, 36px);
+  min-width: 0;
+}
+
+.wordmarkLogo {
+  width: clamp(72px, 12vw, 180px);
+  height: clamp(72px, 12vw, 180px);
+  flex: 0 0 auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
 .wordmark {
   margin: -2px 0 0;
   color: #ffffff;
   white-space: nowrap;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .ctaRail {
@@ -263,6 +280,11 @@
   .showreel {
     position: relative;
     justify-self: end;
+    bottom: auto;
+  }
+
+  .wordmarkLockup {
+    align-items: flex-start;
   }
 
   .wordmark {
@@ -302,6 +324,16 @@
 
   .wordmarkWrap {
     padding: 18px 20px 0;
+  }
+
+  .wordmarkLockup {
+    gap: 12px;
+  }
+
+  .wordmarkLogo {
+    width: clamp(46px, 16vw, 72px);
+    height: clamp(46px, 16vw, 72px);
+    margin-top: 3px;
   }
 
   .wordmark {
