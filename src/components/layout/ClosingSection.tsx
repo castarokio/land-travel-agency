@@ -60,6 +60,10 @@ export function ClosingSection() {
             <a className={styles.emailLink} href={`mailto:${siteConfig.contact.email}`}>
               {siteConfig.contact.email}
             </a>
+            <button className={styles.showreel} type="button" aria-label="Watch our story">
+              <Image src="/assets/hero-study-consultation.webp" alt="" fill sizes="240px" />
+              <span>Watch our story</span>
+            </button>
           </div>
         </div>
 
@@ -72,10 +76,6 @@ export function ClosingSection() {
             ))}
           </nav>
 
-          <button className={styles.showreel} type="button" aria-label="Watch our story">
-            <Image src="/assets/hero-study-consultation.webp" alt="" fill sizes="160px" />
-            <span>Watch our story</span>
-          </button>
         </div>
       </div>
 
@@ -87,11 +87,11 @@ export function ClosingSection() {
             width={1254}
             height={1254}
             className={styles.wordmarkLogo}
-            sizes="clamp(72px,15vw,220px)"
+            sizes="clamp(54px,9vw,150px)"
           />
           <h2
             id="closing-section-title"
-            className={`${styles.wordmark} text-[clamp(72px,15vw,220px)] font-bold leading-[0.8] tracking-[-0.07em]`}
+            className={`${styles.wordmark} text-[clamp(62px,12vw,170px)] font-bold leading-[0.8] tracking-[-0.07em]`}
           >
             LAND TRAVEL
           </h2>
