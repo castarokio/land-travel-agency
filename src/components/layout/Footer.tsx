@@ -6,7 +6,12 @@ import { ClosingSection } from "./ClosingSection";
 export function Footer() {
   const pathname = usePathname();
 
-  if (pathname?.startsWith("/portal") || pathname?.startsWith("/program-finder") || pathname?.startsWith("/login")) {
+  if (
+    pathname?.startsWith("/portal") ||
+    pathname?.startsWith("/program-finder") ||
+    pathname?.startsWith("/login") ||
+    pathname?.startsWith("/signup")
+  ) {
     return null;
   }
 

@@ -27,7 +27,10 @@ export function Header() {
   const lastScrollY = useRef(0);
   const pathname = usePathname();
   const hideHeader =
-    pathname?.startsWith("/portal") || pathname?.startsWith("/program-finder") || pathname?.startsWith("/login");
+    pathname?.startsWith("/portal") ||
+    pathname?.startsWith("/program-finder") ||
+    pathname?.startsWith("/login") ||
+    pathname?.startsWith("/signup");
 
   const toggleMenu = () => {
     setOpen((prev) => !prev);

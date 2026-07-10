@@ -20,7 +20,7 @@ const contentVariants = {
 
 export function PageTransition({ children }: PageTransitionProps) {
   const pathname = usePathname();
-  const disablePanels = pathname?.startsWith("/login");
+  const disablePanels = pathname?.startsWith("/login") || pathname?.startsWith("/signup");
 
   const colors = [
     "var(--primary)",
