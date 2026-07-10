@@ -67,7 +67,7 @@ export function SiteInteractions() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const pathname = usePathname();
 
-  const hideInteractions = pathname?.startsWith("/program-finder");
+  const hideInteractions = pathname?.startsWith("/program-finder") || pathname?.startsWith("/login");
 
   // GSAP micro-interactions
   useEffect(() => {
