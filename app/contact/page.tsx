@@ -1,5 +1,7 @@
 import { Metadata } from "next";
+import Link from "next/link";
 import {
+  ArrowLeft,
   Clock,
   Facebook,
   Instagram,
@@ -51,6 +53,10 @@ export default function ContactPage() {
     <main className={styles.contactPage}>
       <section className={styles.hero}>
         <div className={styles.copy}>
+          <Link className={styles.backHome} href="/">
+            <ArrowLeft size={20} />
+            <span>Retour à l&apos;accueil</span>
+          </Link>
           <p>( CONTACT )</p>
           <h1>Contactez Land Travel</h1>
           <span>

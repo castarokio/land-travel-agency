@@ -10,6 +10,62 @@
   will-change: transform;
 }
 
+.route-breadcrumb-shell {
+  position: relative;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  min-height: 54px;
+  padding: 10px clamp(18px, 5vw, 82px);
+  border-top: 1px solid rgba(6, 20, 47, 0.04);
+  border-bottom: 1px solid rgba(6, 20, 47, 0.08);
+  background: rgba(248, 250, 252, 0.92);
+  backdrop-filter: blur(16px);
+}
+
+.route-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: #1c2638;
+  font-size: clamp(14px, 1.35vw, 18px);
+  font-weight: 850;
+}
+
+.route-breadcrumb-home,
+.route-breadcrumb a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+.route-breadcrumb-home {
+  display: inline-grid;
+  place-items: center;
+}
+
+.route-breadcrumb-home:hover,
+.route-breadcrumb a:hover {
+  color: #0052cc;
+}
+
+.route-breadcrumb-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.route-breadcrumb-item svg {
+  color: rgba(28, 38, 56, 0.5);
+  flex: 0 0 auto;
+}
+
+.route-breadcrumb-item span {
+  color: #4e5d73;
+}
+
 .site-header.header-scrolled {
   background: rgba(255, 255, 255, 0.94);
   border-bottom-color: rgba(8, 8, 8, 0.07);

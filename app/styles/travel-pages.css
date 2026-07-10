@@ -58,6 +58,10 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
+.service-hero.study-hero {
+  border-radius: 0;
+}
+
 .service-hero::before {
   content: "";
   position: absolute;

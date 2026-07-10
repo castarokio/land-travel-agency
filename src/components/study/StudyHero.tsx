@@ -3,7 +3,7 @@ import { asset } from "@/lib/assets";
 export function StudyHero() {
   return (
     <section 
-      className="service-hero" 
+      className="service-hero study-hero"
       style={{ backgroundImage: `url(${asset("hero-study-consultation.webp")})` }}
     >
       <div className="container">

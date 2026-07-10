@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import { MotionPageShell } from "@/components/ui/MotionPageShell";
-import { BackLink } from "@/components/ui/BackLink";
 import { StudyHero } from "@/components/study/StudyHero";
 import { StudyCountryGrid } from "@/components/study/StudyCountryGrid";
 import { RequirementsChecklist } from "@/components/study/RequirementsChecklist";
@@ -17,11 +16,6 @@ export const metadata: Metadata = {
 export default function StudyAbroadPage() {
   return (
     <MotionPageShell>
-      <div className="w-full max-w-[1120px] px-6 mx-auto mt-6">
-        <BackLink href={routes.home}>
-          Retour à l&apos;accueil
-        </BackLink>
-      </div>
       <StudyHero />
       <StudyCountryGrid />
       <RequirementsChecklist />

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { asset } from "@/lib/assets";
 import { routes } from "@/constants/routes";
 
@@ -34,10 +34,6 @@ export function ServiceSelector() {
       <div className="container">
         <div className="quick-service-heading">
           <div>
-            <Link className="quick-service-home" href="/" aria-label="Back to home">
-              <ArrowLeft size={18} />
-              <span>Home</span>
-            </Link>
             <p className="section-label">Quick service selector</p>
           </div>
           <h2 id="quick-service-title">Choose your path</h2>

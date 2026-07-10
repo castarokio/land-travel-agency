@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { RouteBreadcrumb } from "@/components/layout/RouteBreadcrumb";
 import { SiteInteractions } from "@/components/layout/SiteInteractions";
 import { ScrollToTop } from "@/components/layout/ScrollToTop";
 import "./globals.css";
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className="font-sans antialiased">
         <ScrollToTop />
         <Header />
+        <RouteBreadcrumb />
         <main>{children}</main>
         <Footer />
         <SiteInteractions />

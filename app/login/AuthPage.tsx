@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Compass, Eye, GraduationCap, Heart, Loader2, Mail, User } from "lucide-react";
+import { ArrowLeft, Compass, Eye, GraduationCap, Heart, Loader2, Mail, User } from "lucide-react";
 import styles from "./login.module.css";
 
 type AuthMode = "login" | "signup";
@@ -73,6 +73,10 @@ export function AuthPage({ initialMode = "login" }: { initialMode?: AuthMode }) 
 
   return (
     <main className={styles.page}>
+      <Link className={styles.backHome} href="/" aria-label="Back to home">
+        <ArrowLeft size={20} />
+        <span>Home</span>
+      </Link>
       <section className={styles.frame} aria-label="Land Travel authentication">
         <div className={styles.formPanel}>
           <div className={styles.formInner}>
