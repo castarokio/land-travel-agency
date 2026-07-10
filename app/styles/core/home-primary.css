@@ -209,10 +209,6 @@
   will-change: transform;
 }
 
-.proof-ticker-container:hover .proof-ticker-track {
-  animation-play-state: paused;
-}
-
 .proof-logo-card {
   flex: 0 0 280px;
   min-height: 120px;

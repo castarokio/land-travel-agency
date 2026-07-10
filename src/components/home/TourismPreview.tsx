@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Compass, Landmark, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { destinations } from "@/data/destinations";
 import { asset } from "@/lib/assets";
 import { routes } from "@/constants/routes";
@@ -42,9 +42,6 @@ export function TourismPreview() {
           <Link className="placeholder-card media-card scroll-trigger-item" id="local-tourism" href={routes.localTourism}>
             <Image src={asset("local-desert-sunset.webp")} width={540} height={360} alt="Dunes de Sahara - Tourisme Local" />
             <span className="home-pkg-badge" style={{ background: "var(--orange)" }}>Local</span>
-            <span className="placeholder-icon">
-              <Compass size={28} />
-            </span>
             <div className="media-card-details" style={{ position: "absolute", bottom: "20px", left: "20px", zIndex: 3, color: "#fff" }}>
               <h3 style={{ margin: "0 0 4px", fontSize: "20px", fontWeight: "700" }}>Tourisme Local</h3>
               <p style={{ margin: 0, fontSize: "12px", opacity: 0.9 }}>Dunes du Sahara, Riads de Fès & Trekking Atlas</p>
@@ -54,9 +51,6 @@ export function TourismPreview() {
           <Link className="placeholder-card media-card scroll-trigger-item" id="international-tourism" href={routes.internationalTourism}>
             <Image src={asset("intl-maldives-resort.webp")} width={540} height={360} alt="Maldives pilotis - Tourisme International" />
             <span className="home-pkg-badge" style={{ background: "var(--primary)" }}>International</span>
-            <span className="placeholder-icon">
-              <Landmark size={28} />
-            </span>
             <div className="media-card-details" style={{ position: "absolute", bottom: "20px", left: "20px", zIndex: 3, color: "#fff" }}>
               <h3 style={{ margin: "0 0 4px", fontSize: "20px", fontWeight: "700" }}>Tourisme International</h3>
               <p style={{ margin: 0, fontSize: "12px", opacity: 0.9 }}>Maldives, Japon, Alpes Suisses & Safaris</p>
