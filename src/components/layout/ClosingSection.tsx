@@ -21,9 +21,9 @@ const destinations = [
 const legalLinks = [
   { label: "Terms & Conditions", href: "/terms" },
   { label: "Privacy", href: "/privacy" },
-  { label: "Services/Offers", href: "/services" },
+  { label: "Services/Offers", href: "/offers" },
   { label: "Contact", href: "/contact" },
-  { label: "FAQ", href: "/services/study-abroad" },
+  { label: "FAQ", href: "/faq" },
 ];
 
 export function ClosingSection() {
@@ -60,10 +60,10 @@ export function ClosingSection() {
             <a className={styles.emailLink} href={`mailto:${siteConfig.contact.email}`}>
               {siteConfig.contact.email}
             </a>
-            <button className={styles.showreel} type="button" aria-label="Watch our story">
+            <Link className={styles.showreel} href="/about" aria-label="Watch our story">
               <Image src="/assets/hero-study-consultation.webp" alt="" fill sizes="240px" />
               <span>Watch our story</span>
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -98,22 +98,42 @@ export function ClosingSection() {
         </div>
       </div>
 
-      <Link className={styles.ctaRail} href="/services/tourism/international" aria-label="Find your next destination">
+      <div className={styles.ctaRail}>
         <Image src="/assets/airport.webp" alt="" fill sizes="100vw" />
-        <span className={styles.socials} aria-label="Social links">
-          <span className={styles.socialLink} aria-label="Instagram">
+        <div className={styles.socials} aria-label="Social links">
+          <a
+            className={styles.socialLink}
+            href={siteConfig.contact.social.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+          >
             <Instagram size={18} strokeWidth={2.4} />
-          </span>
-          <span className={styles.socialLink} aria-label="LinkedIn">
+          </a>
+          <a
+            className={styles.socialLink}
+            href={siteConfig.contact.social.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+          >
             <Linkedin size={17} strokeWidth={2.4} />
-          </span>
-          <span className={styles.socialLink} aria-label="Facebook">
+          </a>
+          <a
+            className={styles.socialLink}
+            href={siteConfig.contact.social.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook"
+          >
             <Facebook size={17} strokeWidth={2.4} />
-          </span>
-        </span>
-        <span className={styles.ctaText}>Find your next destination</span>
+          </a>
+        </div>
+        <Link className={styles.ctaRailLink} href="/services/tourism/international" aria-label="Find your next destination">
+          <span className={styles.ctaText}>Find your next destination</span>
+        </Link>
         <span className={styles.copyright}>© {currentYear} Land Travel.</span>
-      </Link>
+      </div>
     </footer>
   );
 }

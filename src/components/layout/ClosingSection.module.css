@@ -57,7 +57,7 @@
 .legalLink:focus-visible,
 .socialLink:focus-visible,
 .showreel:focus-visible,
-.ctaRail:focus-visible {
+.ctaRailLink:focus-visible {
   outline: 2px solid rgba(255, 255, 255, 0.72);
   outline-offset: 3px;
 }
@@ -117,6 +117,8 @@
   background: #111111;
   color: #ffffff;
   cursor: pointer;
+  display: block;
+  text-decoration: none;
 }
 
 .showreel img {
@@ -212,7 +214,8 @@
 
 .socials,
 .copyright,
-.ctaText {
+.ctaText,
+.ctaRailLink {
   position: absolute;
   z-index: 1;
 }
@@ -237,6 +240,12 @@
 .socialLink:hover {
   opacity: 1;
   transform: translateY(-2px);
+}
+
+.ctaRailLink {
+  inset: 0;
+  color: #ffffff;
+  text-decoration: none;
 }
 
 .ctaText {
