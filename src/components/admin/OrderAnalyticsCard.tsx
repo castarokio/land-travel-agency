@@ -47,11 +47,11 @@ interface CustomTooltipProps {
 const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-[#111111] text-white p-3 rounded-lg border border-black/10 shadow-lg font-sans text-xs">
-        <p className="font-semibold text-[10px] text-muted-foreground mb-1">Jour {label}</p>
-        <p className="font-bold text-sm text-white">{payload[0].value} Inscriptions</p>
+      <div className="bg-[#0F172A] text-white p-3 rounded-xl border border-slate-700 shadow-xl font-sans text-xs">
+        <p className="font-semibold text-[10px] text-slate-400 mb-1">Jour {label}</p>
+        <p className="font-bold text-xs text-white">{payload[0].value} Inscriptions</p>
         {payload[1] && (
-          <p className="text-[10px] text-[#A5A5A5] mt-0.5">Mois Dernier: {payload[1].value}</p>
+          <p className="text-[10px] text-slate-400 mt-0.5">Mois Dernier: {payload[1].value}</p>
         )}
       </div>
     );
@@ -64,36 +64,36 @@ export default function OrderAnalyticsCard() {
   const [period, setPeriod] = useState("monthly");
 
   return (
-    <Card className="rounded-[10px] border border-[#E9E9E9] bg-white p-6 shadow-none font-sans flex flex-col h-full">
+    <Card className="rounded-2xl border border-[#EBEFF2] bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] font-sans flex flex-col h-full justify-between">
       {/* Header Row */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <h3 className="text-sm font-bold text-[#111111]">Analyse des Inscriptions</h3>
-            <div className="flex items-center gap-0.5 px-2 py-0.5 rounded-[6px] text-[10px] font-bold bg-[#DFF5E9] text-[#159768]">
+            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Analyse des Inscriptions</h3>
+            <div className="flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#DFF5E9] text-[#159768]">
               <ArrowUp size={8} strokeWidth={3} />
               <span>+15%</span>
             </div>
-            <span className="text-[10px] text-muted-foreground">/Mois</span>
+            <span className="text-[10px] text-slate-400 font-bold">/Mois</span>
           </div>
-          <p className="text-xs text-[#666666]">Excellente croissance de l'intérêt étudiant 📈</p>
+          <p className="text-xs text-slate-500 font-medium">Excellente croissance de l'intérêt étudiant 📈</p>
         </div>
 
         {/* Filters and Legend */}
-        <div className="flex flex-wrap items-center gap-3 self-stretch sm:self-auto justify-end">
-          <div className="flex items-center gap-4 text-xs font-semibold mr-2">
+        <div className="flex flex-wrap items-center gap-4 self-stretch sm:self-auto justify-end">
+          <div className="flex items-center gap-3 text-[11px] font-bold mr-2">
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#111111]" />
-              <span className="text-[#111111]">Ce Mois</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#0052cc]" />
+              <span className="text-[#0F172A]">Ce Mois</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#A5A5A5]" />
-              <span className="text-muted-foreground">Mois Dernier</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#B0B0B0]" />
+              <span className="text-slate-400">Mois Dernier</span>
             </div>
           </div>
 
           <Select value={service} onValueChange={(val) => setService(val || "all")}>
-            <SelectTrigger className="w-[120px] h-[34px] text-xs bg-white border border-[#E3E3E3] rounded-lg">
+            <SelectTrigger className="w-[120px] h-[32px] text-xs bg-white border border-[#EBEFF2] rounded-lg shadow-none text-slate-600 font-semibold focus:ring-0">
               <SelectValue placeholder="Service" />
             </SelectTrigger>
             <SelectContent>
@@ -105,7 +105,7 @@ export default function OrderAnalyticsCard() {
           </Select>
 
           <Select value={period} onValueChange={(val) => setPeriod(val || "monthly")}>
-            <SelectTrigger className="w-[100px] h-[34px] text-xs bg-white border border-[#E3E3E3] rounded-lg">
+            <SelectTrigger className="w-[90px] h-[32px] text-xs bg-white border border-[#EBEFF2] rounded-lg shadow-none text-slate-600 font-semibold focus:ring-0">
               <SelectValue placeholder="Période" />
             </SelectTrigger>
             <SelectContent>
@@ -118,38 +118,38 @@ export default function OrderAnalyticsCard() {
       </div>
 
       {/* Chart Block */}
-      <div className="flex-1 w-full h-[220px]">
+      <div className="w-full h-[220px] min-h-[220px] mt-2">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F3F3" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
             <XAxis 
               dataKey="day" 
               axisLine={false} 
               tickLine={false} 
-              tick={{ fill: "#AAAAAA", fontSize: 10 }}
+              tick={{ fill: "#94A3B8", fontSize: 10, fontWeight: "600" }}
             />
             <YAxis 
               axisLine={false} 
               tickLine={false} 
-              tick={{ fill: "#AAAAAA", fontSize: 10 }}
+              tick={{ fill: "#94A3B8", fontSize: 10, fontWeight: "600" }}
             />
             <Tooltip content={<CustomTooltip />} />
             <Line 
               type="monotone" 
               dataKey="actuel" 
-              stroke="#111111" 
-              strokeWidth={1.5} 
+              stroke="#0052cc" 
+              strokeWidth={2} 
               dot={false}
-              activeDot={{ r: 4, stroke: "#111111", strokeWidth: 1 }}
+              activeDot={{ r: 4, stroke: "#0052cc", strokeWidth: 1.5, fill: "#ffffff" }}
             />
             <Line 
               type="monotone" 
               dataKey="passe" 
-              stroke="#A5A5A5" 
-              strokeWidth={1.25} 
+              stroke="#B0B0B0" 
+              strokeWidth={1.5} 
               strokeDasharray="4 4"
               dot={false}
-              activeDot={{ r: 3, stroke: "#A5A5A5", strokeWidth: 1 }}
+              activeDot={{ r: 3, stroke: "#B0B0B0", strokeWidth: 1, fill: "#ffffff" }}
             />
           </LineChart>
         </ResponsiveContainer>

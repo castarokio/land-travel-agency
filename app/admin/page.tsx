@@ -498,19 +498,27 @@ export default function AdminPage() {
       {activeTab === "overview" && (
         <div className="space-y-6">
           {/* Metrics & Performance Grid */}
-          <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)] gap-6">
-            <MetricSummaryCard 
-              totalClients={students.length} 
-              totalRevenue="€25,843" 
-              newLeadsCount={inquiries.filter(i => i.status === "new").length} 
-            />
-            <PerformanceCard conversionRate={82} responseRate={90} />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <MetricSummaryCard 
+                totalClients={students.length} 
+                totalRevenue="€25,843" 
+                newLeadsCount={inquiries.filter(i => i.status === "new").length} 
+              />
+            </div>
+            <div className="lg:col-span-1">
+              <PerformanceCard conversionRate={82} responseRate={90} />
+            </div>
           </div>
 
           {/* Analytics Graphs Grid */}
-          <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)] gap-6">
-            <OrderAnalyticsCard />
-            <RevenueProfileCard />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <OrderAnalyticsCard />
+            </div>
+            <div className="lg:col-span-1">
+              <RevenueProfileCard />
+            </div>
           </div>
 
           {/* Activity Data Table */}

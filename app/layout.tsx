@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { RouteBreadcrumb } from "@/components/layout/RouteBreadcrumb";
-import { SiteInteractions } from "@/components/layout/SiteInteractions";
-import { ScrollToTop } from "@/components/layout/ScrollToTop";
+import { ConditionalLayoutWrapper } from "@/components/layout/ConditionalLayoutWrapper";
 import "./globals.css";
 import "./styles/travel-pages.css";
 import "./styles/tourism-destinations.css";
@@ -29,12 +25,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="fr" className={cn("font-sans", geist.variable)}>
       <body className="font-sans antialiased">
-        <ScrollToTop />
-        <Header />
-        <RouteBreadcrumb />
-        <main>{children}</main>
-        <Footer />
-        <SiteInteractions />
+        <ConditionalLayoutWrapper>
+          {children}
+        </ConditionalLayoutWrapper>
       </body>
     </html>
   );

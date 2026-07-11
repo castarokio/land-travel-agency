@@ -136,3 +136,41 @@
     @apply font-sans;
     }
 }
+
+/* Custom Admin Panel Layout Helpers */
+.admin-shell-main {
+  min-height: 100vh;
+  background-color: #F4F5F6;
+  display: flex;
+}
+
+.admin-sidebar-fixed {
+  width: 268px;
+  background-color: #F8F9FA;
+  border-right: 1px solid #EBEFF2;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-main-content {
+  flex: 1;
+  padding-left: 268px;
+  min-height: 100vh;
+  background-color: #F4F5F6;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 1024px) {
+  .admin-sidebar-fixed {
+    display: none;
+  }
+  .admin-main-content {
+    padding-left: 0;
+  }
+}

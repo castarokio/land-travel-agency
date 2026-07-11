@@ -76,17 +76,17 @@ export default function ActivityTable({ inquiries, onSelectInquiry }: ActivityTa
   };
 
   return (
-    <div className="bg-white border border-[#E9E9E9] rounded-[10px] p-6 font-sans">
+    <div className="bg-white border border-[#EBEFF2] rounded-2xl p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] font-sans">
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h3 className="text-sm font-bold text-[#111111] mb-1">Dernières Activités</h3>
-          <p className="text-xs text-muted-foreground">Historique récent des demandes de contact et prospects</p>
+          <h3 className="text-sm font-extrabold text-[#0F172A] mb-1">Dernières Inscriptions</h3>
+          <p className="text-xs text-slate-400 font-bold">Suivi et historique récent des prospects</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-end">
           <Select value={statusFilter} onValueChange={(val) => setStatusFilter(val || "all")}>
-            <SelectTrigger className="w-[120px] h-[34px] text-xs border border-[#E3E3E3] rounded-lg bg-white">
+            <SelectTrigger className="w-[120px] h-[32px] text-xs border border-[#EBEFF2] rounded-lg bg-white shadow-none text-slate-600 font-semibold focus:ring-0">
               <SelectValue placeholder="Statut" />
             </SelectTrigger>
             <SelectContent>
@@ -98,7 +98,7 @@ export default function ActivityTable({ inquiries, onSelectInquiry }: ActivityTa
           </Select>
 
           <Select value={timeFilter} onValueChange={(val) => setTimeFilter(val || "all")}>
-            <SelectTrigger className="w-[120px] h-[34px] text-xs border border-[#E3E3E3] rounded-lg bg-white">
+            <SelectTrigger className="w-[120px] h-[32px] text-xs border border-[#EBEFF2] rounded-lg bg-white shadow-none text-slate-600 font-semibold focus:ring-0">
               <SelectValue placeholder="Période" />
             </SelectTrigger>
             <SelectContent>
@@ -113,38 +113,38 @@ export default function ActivityTable({ inquiries, onSelectInquiry }: ActivityTa
             size="icon"
             onClick={handlePrint}
             title="Imprimer"
-            className="w-[34px] h-[34px] border border-[#E3E3E3] rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground"
+            className="w-[32px] h-[32px] border border-[#EBEFF2] rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 shadow-none bg-white"
           >
-            <Printer size={16} strokeWidth={1.7} />
+            <Printer size={15} strokeWidth={2} />
           </Button>
         </div>
       </div>
 
       {/* Table Container */}
-      <div className="overflow-x-auto border border-[#E9E9E9] rounded-lg">
+      <div className="overflow-x-auto border border-[#EBEFF2] rounded-xl">
         <Table>
-          <TableHeader className="bg-[#FAFAFA]">
-            <TableRow className="border-b border-[#E9E9E9] hover:bg-transparent">
+          <TableHeader className="bg-[#F8F9FA]">
+            <TableRow className="border-b border-[#EBEFF2] hover:bg-transparent">
               <TableHead className="w-[40px] px-4 py-3">
                 <input 
                   type="checkbox"
                   onChange={(e) => handleSelectAll(e.target.checked)}
                   checked={filteredInquiries.length > 0 && filteredInquiries.every(item => selectedRows[item.id])}
-                  className="rounded border-[#DDDDDD] text-[#0052cc] focus:ring-[#0052cc]"
+                  className="rounded border-slate-300 text-[#0052cc] focus:ring-[#0052cc] w-4 h-4 cursor-pointer"
                 />
               </TableHead>
-              <TableHead className="text-xs font-semibold text-[#111111] px-4 py-3">ID Demande</TableHead>
-              <TableHead className="text-xs font-semibold text-[#111111] px-4 py-3">Nom Candidat</TableHead>
-              <TableHead className="text-xs font-semibold text-[#111111] px-4 py-3">Service Demandé</TableHead>
-              <TableHead className="text-xs font-semibold text-[#111111] px-4 py-3">Date & Heure</TableHead>
-              <TableHead className="text-xs font-semibold text-[#111111] px-4 py-3">Contact</TableHead>
-              <TableHead className="text-xs font-semibold text-[#111111] px-4 py-3 text-right">Statut</TableHead>
+              <TableHead className="text-xs font-bold text-slate-400 uppercase tracking-wider px-4 py-3">ID Demande</TableHead>
+              <TableHead className="text-xs font-bold text-slate-400 uppercase tracking-wider px-4 py-3">Nom Candidat</TableHead>
+              <TableHead className="text-xs font-bold text-slate-400 uppercase tracking-wider px-4 py-3">Service Demandé</TableHead>
+              <TableHead className="text-xs font-bold text-slate-400 uppercase tracking-wider px-4 py-3">Date & Heure</TableHead>
+              <TableHead className="text-xs font-bold text-slate-400 uppercase tracking-wider px-4 py-3">Contact</TableHead>
+              <TableHead className="text-xs font-bold text-slate-400 uppercase tracking-wider px-4 py-3 text-right">Statut</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredInquiries.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-xs text-muted-foreground">
+                <TableCell colSpan={7} className="text-center py-10 text-xs text-slate-400 font-semibold">
                   Aucune demande trouvée.
                 </TableCell>
               </TableRow>
@@ -152,7 +152,7 @@ export default function ActivityTable({ inquiries, onSelectInquiry }: ActivityTa
               filteredInquiries.map((item) => (
                 <TableRow 
                   key={item.id} 
-                  className="border-b border-[#E9E9E9] hover:bg-[#FAFAFA] cursor-pointer transition-colors duration-100"
+                  className="border-b border-[#EBEFF2] hover:bg-[#F8F9FA]/50 cursor-pointer transition-colors duration-100"
                   onClick={() => onSelectInquiry?.(item)}
                 >
                   <TableCell className="px-4 py-3.5" onClick={(e) => e.stopPropagation()}>
@@ -160,19 +160,19 @@ export default function ActivityTable({ inquiries, onSelectInquiry }: ActivityTa
                       type="checkbox"
                       checked={!!selectedRows[item.id]}
                       onChange={(e) => handleSelectRow(item.id, e.target.checked)}
-                      className="rounded border-[#DDDDDD] text-[#0052cc] focus:ring-[#0052cc]"
+                      className="rounded border-slate-300 text-[#0052cc] focus:ring-[#0052cc] w-4 h-4 cursor-pointer"
                     />
                   </TableCell>
-                  <TableCell className="text-xs font-medium text-[#666666] px-4 py-3.5">
+                  <TableCell className="text-xs font-bold text-slate-500 px-4 py-3.5">
                     #{item.id.substring(0, 8)}
                   </TableCell>
-                  <TableCell className="text-xs font-bold text-[#111111] px-4 py-3.5">
-                    {item.full_name || item.fullName}
+                  <TableCell className="text-xs font-bold text-[#0F172A] px-4 py-3.5">
+                    {item.name || item.full_name || item.fullName || "Prospect Land Travel"}
                   </TableCell>
-                  <TableCell className="text-xs text-[#666666] px-4 py-3.5 capitalize">
-                    {item.service_type || item.serviceType || "contact"}
+                  <TableCell className="text-xs font-bold text-slate-500 px-4 py-3.5 capitalize">
+                    {item.service_type || item.serviceType || item.service_options || "contact"}
                   </TableCell>
-                  <TableCell className="text-xs text-[#8B8B8B] px-4 py-3.5">
+                  <TableCell className="text-xs font-semibold text-slate-400 px-4 py-3.5">
                     {new Date(item.created_at).toLocaleString("fr-FR", {
                       day: "2-digit",
                       month: "short",
@@ -181,11 +181,11 @@ export default function ActivityTable({ inquiries, onSelectInquiry }: ActivityTa
                       minute: "2-digit"
                     })}
                   </TableCell>
-                  <TableCell className="text-xs text-[#666666] px-4 py-3.5">
+                  <TableCell className="text-xs font-semibold text-slate-500 px-4 py-3.5">
                     {item.phone || item.email}
                   </TableCell>
                   <TableCell className="px-4 py-3.5 text-right" onClick={(e) => e.stopPropagation()}>
-                    <span className={`inline-block px-2.5 py-0.5 rounded-[6px] text-[10px] font-bold border ${getStatusStyle(item.status)}`}>
+                    <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border ${getStatusStyle(item.status)}`}>
                       {item.status || "new"}
                     </span>
                   </TableCell>
