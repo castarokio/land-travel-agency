@@ -19,7 +19,14 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: "Land Travel | Études, tourisme et Omra",
-  description: "Cabinet de conseil en éducation internationale, tourisme local/international et voyages Omra."
+  description: "Cabinet de conseil en éducation internationale, tourisme local/international et voyages Omra.",
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+      { url: "/assets/landtravel-logo.png", type: "image/png" },
+    ],
+    apple: [{ url: "/assets/landtravel-logo.png", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
