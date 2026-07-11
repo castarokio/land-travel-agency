@@ -236,3 +236,28 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE OR REPLACE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- Create default admin user in auth.users
+INSERT INTO auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, recovery_sent_at, last_sign_in_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at, confirmation_token, email_change, email_change_token_new, recovery_token)
+VALUES (
+  '00000000-0000-0000-0000-000000000000',
+  'd0000000-0000-0000-0000-000000000001',
+  'authenticated',
+  'authenticated',
+  'admin@landtravel.com',
+  crypt('admin', gen_salt('bf', 10)), -- Password: admin
+  now(),
+  null,
+  null,
+  '{"provider":"email","providers":["email"]}',
+  '{"name":"Admin Land Travel", "role":"admin"}',
+  now(),
+  now(),
+  '',
+  '',
+  '',
+  ''
+) ON CONFLICT (id) DO NOTHING;
+
+-- Force update profile to admin
+UPDATE public.profiles SET role = 'admin' WHERE email = 'admin@landtravel.com';
