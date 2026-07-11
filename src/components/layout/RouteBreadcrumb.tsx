@@ -4,7 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight, Home } from "lucide-react";
 
-const hiddenPrefixes = ["/login", "/signup", "/portal", "/program-finder"];
+const hiddenPrefixes = [
+  "/login",
+  "/signup",
+  "/portal",
+  "/program-finder",
+  "/tourism/destination",
+  "/services/tourism/destinations",
+];
 
 const labelMap: Record<string, string> = {
   about: "About",

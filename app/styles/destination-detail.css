@@ -91,6 +91,25 @@
   padding-bottom: 40px;
 }
 
+.dest-back-wrap {
+  margin-bottom: 28px;
+}
+
+.dest-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.dest-back-link:hover {
+  color: var(--primary);
+}
+
 .dest-hero-grid {
   display: grid;
   grid-template-columns: 2.15fr 1fr;
@@ -259,6 +278,50 @@
   line-height: 1.8;
   color: var(--muted);
   margin: 0;
+}
+
+.dest-hotels-block {
+  margin-top: 32px;
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+}
+
+.dest-hotels-eyebrow {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.dest-hotels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dest-hotel-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dest-hotel-item span {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.dest-hotel-item h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.dest-hotel-item p {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
 }
 
 /* Sections Global Layout */
@@ -528,6 +591,10 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 32px;
   margin-top: 40px;
+}
+
+.dest-related-title-wrap {
+  margin-bottom: 20px;
 }
 
 .dest-related-card {
