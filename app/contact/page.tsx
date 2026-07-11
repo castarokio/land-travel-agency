@@ -11,15 +11,17 @@ import {
   MessageCircle,
   Phone,
 } from "lucide-react";
-import { siteConfig } from "@/data/site";
+import { getSiteConfig } from "@/lib/content/public-content";
 import styles from "./contact.module.css";
+import { ContactFormClient } from "./ContactFormClient";
 
 export const metadata: Metadata = {
   title: "Contact | Land Travel Agency",
   description: "Contactez Land Travel pour vos projets d'études, tourisme et Omra.",
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const siteConfig = await getSiteConfig();
   const mapEmbedUrl =
     "https://www.openstreetmap.org/export/embed.html?bbox=4.026%2C36.68%2C4.09%2C36.735&layer=mapnik&marker=36.7118%2C4.0459";
   const contactCards = [
@@ -66,37 +68,7 @@ export default function ContactPage() {
           </span>
         </div>
 
-        <form className={styles.formCard}>
-          <div className={styles.twoCol}>
-            <label>
-              Prénom
-              <input placeholder="Votre prénom" />
-            </label>
-            <label>
-              Nom
-              <input placeholder="Votre nom" />
-            </label>
-          </div>
-          <div className={styles.twoCol}>
-            <label>
-              Téléphone
-              <input placeholder="+213 ..." />
-            </label>
-            <label>
-              Adresse e-mail
-              <input placeholder="votre@email.com" />
-            </label>
-          </div>
-          <label>
-            Service demandé
-            <input placeholder="Études, tourisme, Omra, visa..." />
-          </label>
-          <label>
-            Message
-            <textarea placeholder="Expliquez votre besoin ou demande de rendez-vous" />
-          </label>
-          <button type="button">Envoyer la demande</button>
-        </form>
+        <ContactFormClient />
       </section>
 
       <section className={styles.infoSection} aria-label="Informations de l'agence">
@@ -166,3 +138,5 @@ export default function ContactPage() {
     </main>
   );
 }
+
+

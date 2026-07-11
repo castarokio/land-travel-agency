@@ -17,12 +17,12 @@ import {
   Star,
 } from "lucide-react";
 import { MotionPageShell } from "@/components/ui/MotionPageShell";
-import { tourismDestinations } from "@/lib/site-data";
+import { Destination } from "@/types";
 import { Button } from "@/components/ui/Button";
 
-export default function DestinationDetailPageClient({ params }: { params: Promise<{ id: string }> }) {
+export default function DestinationDetailPageClient({ params, destinations }: { params: Promise<{ id: string }>; destinations: Destination[] }) {
   const { id } = use(params);
-  const dest = tourismDestinations.find((destination) => destination.id === id);
+  const dest = destinations.find((destination) => destination.id === id);
   const [selectedDay, setSelectedDay] = useState(0);
   const [openHighlightIndex, setOpenHighlightIndex] = useState(0);
   const [openIncludedIndex, setOpenIncludedIndex] = useState(0);
@@ -57,7 +57,7 @@ export default function DestinationDetailPageClient({ params }: { params: Promis
     }
   };
 
-  const relatedDestinations = tourismDestinations
+  const relatedDestinations = destinations
     .filter((destination) => destination.id !== dest.id)
     .slice(0, 3);
 
@@ -392,3 +392,5 @@ export default function DestinationDetailPageClient({ params }: { params: Promis
     </MotionPageShell>
   );
 }
+
+

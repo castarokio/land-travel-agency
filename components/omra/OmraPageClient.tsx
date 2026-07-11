@@ -12,6 +12,7 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { createClient } from "@/lib/supabase/client";
 
 export default function OmraPageClient() {
   const [selectedFormula, setSelectedFormula] = useState(omraPackages[0].id);
@@ -29,9 +30,25 @@ export default function OmraPageClient() {
     }
   );
 
-  const onSubmit = (data: OmraInquiryFields) => {
+  const onSubmit = async (data: OmraInquiryFields) => {
     const activeFormulaObj = omraPackages.find(p => p.id === selectedFormula) || omraPackages[0];
     
+    // Save inquiry to Supabase
+    const supabase = createClient();
+    const { error: dbError } = await supabase.from("inquiries").insert({
+      name: data.name,
+      phone: data.phone,
+      email: data.email || null,
+      service_type: "omra",
+      destination_or_package: `Formule: ${activeFormulaObj.name} (${data.departureMonth}, ${data.pilgrims} Pèlerins)`,
+      message: data.notes || null,
+      preferred_contact: "whatsapp",
+    });
+
+    if (dbError) {
+      console.error("Failed to save inquiry to database:", dbError);
+    }
+
     let message = `Bonjour Land Travel, je souhaite réserver ma place pour l'Omra :\n`;
     message += `• Formule : ${activeFormulaObj.name}\n`;
     message += `• Nom Complet : ${data.name}\n`;

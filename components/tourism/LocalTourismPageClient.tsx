@@ -12,6 +12,7 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { PageHero } from "@/components/ui/PageHero";
+import { createClient } from "@/lib/supabase/client";
 
 export default function LocalTourismPageClient() {
   const [selectedTour, setSelectedTour] = useState(localTours[0].id);
@@ -40,7 +41,23 @@ export default function LocalTourismPageClient() {
 
   const activeTourObj = localTours.find(t => t.id === selectedTour) || localTours[0];
 
-  const onSubmit = (data: TourismInquiryFields) => {
+  const onSubmit = async (data: TourismInquiryFields) => {
+    // Save inquiry to Supabase
+    const supabase = createClient();
+    const { error: dbError } = await supabase.from("inquiries").insert({
+      name: data.name,
+      phone: data.phone,
+      email: data.email || null,
+      service_type: "tourism_local",
+      destination_or_package: `Circuit: ${activeTourObj.title} (${data.date}, ${data.travelers} voyageurs)`,
+      message: data.notes || null,
+      preferred_contact: "whatsapp",
+    });
+
+    if (dbError) {
+      console.error("Failed to save inquiry to database:", dbError);
+    }
+
     let message = `Bonjour Land Travel, je souhaite me renseigner sur le circuit local :\n`;
     message += `• Circuit : ${activeTourObj.title}\n`;
     message += `• Nom Complet : ${data.name}\n`;

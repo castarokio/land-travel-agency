@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
-import { studyCountries } from "@/data/studyCountries";
-import { universities } from "@/data/universities";
+import { getStudyCountries, getUniversities } from "@/lib/content/public-content";
 import { CountryPageLayout } from "@/components/universities/CountryPageLayout";
 
 interface CountryPageProps {
@@ -8,15 +7,8 @@ interface CountryPageProps {
 }
 
 export async function generateStaticParams() {
-  return [
-    { country: "france" },
-    { country: "canada" },
-    { country: "uk" },
-    { country: "germany" },
-    { country: "turkey" },
-    { country: "russia" },
-    { country: "malaysia" },
-  ];
+  const studyCountries = await getStudyCountries();
+  return studyCountries.map((country) => ({ country: country.id }));
 }
 
 const countryDetails: Record<string, {
@@ -404,6 +396,8 @@ export default async function CountryUniversitiesPage({ params }: CountryPagePro
   const { country } = await params;
   const currentCountry = country.toLowerCase();
   
+  const studyCountries = await getStudyCountries();
+  const universities = await getUniversities();
   const countryInfo = studyCountries.find(
     (c) => c.id.toLowerCase() === currentCountry
   );
@@ -450,3 +444,5 @@ export default async function CountryUniversitiesPage({ params }: CountryPagePro
     />
   );
 }
+
+

@@ -8,6 +8,8 @@ import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { navItems } from "@/lib/site-data";
 import { Logo } from "@/components/Logo";
+import { createClient } from "@/lib/supabase/client";
+import { User as SupabaseUser } from "@supabase/supabase-js";
 
 const menuTransition = {
   type: "spring",
@@ -25,6 +27,52 @@ export function Header() {
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
   const pathname = usePathname();
+
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [profile, setProfile] = useState<{ name: string; role: string } | null>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        const { data: prof } = await supabase
+          .from("profiles")
+          .select("name, role")
+          .eq("id", session.user.id)
+          .single();
+        setProfile(prof);
+      }
+    };
+
+    getSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        const { data: prof } = await supabase
+          .from("profiles")
+          .select("name, role")
+          .eq("id", session.user.id)
+          .single();
+        setProfile(prof);
+      } else {
+        setProfile(null);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setProfile(null);
+    window.location.href = "/";
+  };
 
   const toggleMenu = () => {
     setOpen((prev) => !prev);
@@ -138,12 +186,25 @@ export function Header() {
         </nav>
 
         <div className="desktop-actions">
-          <Link className="login-link" href="/login">
-            Connexion
-          </Link>
-          <Link className="button button-small" href="/signup">
-            {"S'inscrire"}
-          </Link>
+          {user ? (
+            <>
+              <Link className="login-link" href={profile?.role === "admin" || profile?.role === "advisor" ? "/admin" : "/portal"}>
+                {profile?.name || "Mon Portail"}
+              </Link>
+              <button onClick={handleSignOut} className="button button-small" style={{ cursor: "pointer" }}>
+                Déconnexion
+              </button>
+            </>
+          ) : (
+            <>
+              <Link className="login-link" href="/login">
+                Connexion
+              </Link>
+              <Link className="button button-small" href="/signup">
+                {"S'inscrire"}
+              </Link>
+            </>
+          )}
         </div>
 
         <button
@@ -177,12 +238,25 @@ export function Header() {
               ))}
             </div>
           ))}
-          <Link href="/login" onClick={() => setOpen(false)}>
-            Connexion
-          </Link>
-          <Link className="button" href="/signup" onClick={() => setOpen(false)}>
-            {"S'inscrire"}
-          </Link>
+          {user ? (
+            <>
+              <Link href={profile?.role === "admin" || profile?.role === "advisor" ? "/admin" : "/portal"} onClick={() => setOpen(false)}>
+                {profile?.name || "Mon Portail"}
+              </Link>
+              <button onClick={() => { handleSignOut(); setOpen(false); }} className="button" style={{ width: "100%", cursor: "pointer", textAlign: "center", marginTop: "10px" }}>
+                Déconnexion
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" onClick={() => setOpen(false)}>
+                Connexion
+              </Link>
+              <Link className="button" href="/signup" onClick={() => setOpen(false)}>
+                {"S'inscrire"}
+              </Link>
+            </>
+          )}
         </div>
       )}
     </header>

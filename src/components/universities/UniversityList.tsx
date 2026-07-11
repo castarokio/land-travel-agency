@@ -1,15 +1,60 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Search, MapPin, GraduationCap } from "lucide-react";
-import { universities } from "@/data/universities";
+import { useState, useMemo, useEffect } from "react";
+import { Search, MapPin, GraduationCap, Loader2 } from "lucide-react";
+import { universities as staticUnis } from "@/data/universities";
 import { UniversityCard } from "@/components/ui/UniversityCard";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { createClient } from "@/lib/supabase/client";
 
 export function UniversityList() {
   const [search, setSearch] = useState("");
   const [selectedCountry, setSelectedCountry] = useState<string>("All");
   const [selectedProgram, setSelectedProgram] = useState<string>("All");
+  const [universities, setUniversities] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUnis = async () => {
+      try {
+        const supabase = createClient();
+        const { data, error } = await supabase.from("universities").select("*");
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          const mapped = data.map(u => ({
+            id: u.id,
+            name: u.name,
+            country: u.country,
+            city: u.city || "",
+            image: `/logos/universities/${u.id}.svg`,
+            rating: u.rating || 4.8,
+            rank: u.rank || null,
+            tuition: u.tuition_range || "N/A",
+            programs: u.programs || ["Administration", "Informatique", "Génie", "Droit"]
+          }));
+          setUniversities(mapped);
+        } else {
+          setUniversities(staticUnis);
+        }
+      } catch (err) {
+        console.error("Supabase universities fetch failed, using static fallback:", err);
+        setUniversities(staticUnis);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUnis();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 text-neutral-400">
+        <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
+        <p className="text-sm font-semibold">Chargement des universités...</p>
+      </div>
+    );
+  }
 
   // Extract unique countries
   const countriesList = useMemo(() => {

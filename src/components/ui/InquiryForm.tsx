@@ -7,6 +7,7 @@ import { Send } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createWhatsappLink } from "@/lib/whatsapp";
 import { Button } from "./Button";
+import { createClient } from "@/lib/supabase/client";
 
 // Define the validation schema using Zod
 const formSchema = z.object({
@@ -63,6 +64,22 @@ export function InquiryForm({
 
   const onSubmit = async (data: FormValues) => {
     try {
+      // Save lead to Supabase Database
+      const supabase = createClient();
+      const { error: dbError } = await supabase.from("inquiries").insert({
+        name: data.fullName,
+        phone: data.phone,
+        email: data.email || null,
+        service_type: data.serviceType,
+        destination_or_package: data.destinationOrPackage || null,
+        message: data.message || null,
+        preferred_contact: data.preferredContact,
+      });
+
+      if (dbError) {
+        console.error("Failed to save inquiry to database:", dbError);
+      }
+
       // Build WhatsApp message text
       const serviceLabels = {
         "study-abroad": "Study Abroad (Admission Support)",

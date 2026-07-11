@@ -1,4 +1,4 @@
-import { contactFaqs, homeFaqs, omraFaqs, studyFaqs, tourismFaqs } from "@/data/faqs";
+import { getPublicContent } from "@/lib/content/public-content";
 import styles from "../legal-pages.module.css";
 
 export const metadata = {
@@ -6,9 +6,17 @@ export const metadata = {
   description: "Frequently asked questions about Land Travel services.",
 };
 
-const faqs = [...homeFaqs, ...studyFaqs, ...tourismFaqs, ...omraFaqs, ...contactFaqs];
+export default async function FaqPage() {
+  const content = await getPublicContent();
+  const faqGroups = content["faqs.groups"];
+  const faqs = [
+    ...faqGroups.home,
+    ...faqGroups.study,
+    ...faqGroups.tourism,
+    ...faqGroups.omra,
+    ...faqGroups.contact,
+  ];
 
-export default function FaqPage() {
   return (
     <main className={styles.page}>
       <div className={styles.shell}>

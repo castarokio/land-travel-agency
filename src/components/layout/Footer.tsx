@@ -8,6 +8,7 @@ export function Footer() {
 
   if (
     pathname?.startsWith("/portal") ||
+    pathname?.startsWith("/admin") ||
     pathname?.startsWith("/program-finder") ||
     pathname?.startsWith("/tourism/destination") ||
     pathname?.startsWith("/services/tourism/destinations") ||

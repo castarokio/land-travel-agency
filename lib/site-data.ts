@@ -1,6 +1,10 @@
-export * from "./data/assets";
-export * from "./data/navigation";
-export * from "./data/services";
-export * from "./data/home";
-export * from "./data/travel-packages";
-export * from "./data/tourism-destinations";
+export { asset } from "./data/assets";
+export { siteConfig } from "@/data/site";
+export { navItems } from "@/data/navigation";
+export { services, serviceJourney } from "@/data/services";
+export { proofLogos, studyDestinations as destinations, homeStats as stats } from "@/data/home";
+export { testimonials } from "@/data/testimonials";
+export { localPackages as localTours } from "@/data/localPackages";
+export { internationalPackages as intlPackages } from "@/data/internationalPackages";
+export { omraPackages } from "@/data/omraPackages";
+export { destinations as tourismDestinations } from "@/data/destinations";

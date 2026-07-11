@@ -8,6 +8,7 @@ const hiddenPrefixes = [
   "/login",
   "/signup",
   "/portal",
+  "/admin",
   "/program-finder",
   "/tourism/destination",
   "/services/tourism/destinations",

@@ -6,17 +6,27 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "db:seed": "tsx scripts/seed-content.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
+    "@prisma/client": "^6.19.3",
+    "@supabase/ssr": "^0.12.0",
+    "@supabase/supabase-js": "^2.110.2",
     "@tailwindcss/postcss": "^4.3.2",
     "autoprefixer": "^10.5.2",
+    "bcryptjs": "^3.0.3",
     "framer-motion": "^12.42.2",
     "gsap": "^3.15.0",
+    "jose": "^6.2.3",
     "lucide-react": "^0.468.0",
     "next": "^15.0.4",
     "postcss": "^8.5.16",
+    "prisma": "^6.19.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.81.0",
@@ -30,6 +40,7 @@
     "eslint": "^9.16.0",
     "eslint-config-next": "^15.0.4",
     "playwright": "^1.61.1",
+    "tsx": "^4.23.0",
     "typescript": "^5.7.2"
   }
 }

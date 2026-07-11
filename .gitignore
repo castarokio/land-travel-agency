@@ -16,3 +16,6 @@ tsconfig.tsbuildinfo
 output/
 
 .vercel
+
+prisma/*.db
+prisma/*.db-journal

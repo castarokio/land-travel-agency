@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         String   @default("admin")
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model ContentEntry {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  type        String
+  title       String
+  data        Json
+  published   Boolean  @default(true)
+  version     Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  updatedById String?
+}
+
+model Lead {
+  id                   String   @id @default(cuid())
+  fullName             String
+  phone                String
+  email                String?
+  serviceType          String
+  destinationOrPackage String?
+  preferredContact     String   @default("whatsapp")
+  message              String?
+  status               String   @default("new")
+  source               String   @default("website")
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model PortalProfile {
+  id        String   @id @default(cuid())
+  fullName  String
+  email     String   @unique
+  phone     String?
+  service   String
+  status    String   @default("active")
+  data      Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MediaAsset {
+  id         String   @id @default(cuid())
+  fileName   String
+  publicUrl  String
+  storageKey String?
+  mimeType   String
+  kind       String
+  alt        String?
+  width      Int?
+  height     Int?
+  sizeBytes  Int?
+  category   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}

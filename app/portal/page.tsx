@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,25 +19,60 @@ import {
   TrendingUp,
   X,
   FileCheck,
-  Briefcase
+  Briefcase,
+  Loader2
 } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { User as SupabaseUser } from "@supabase/supabase-js";
 
 interface DocumentItem {
-  id: number;
+  id: string;
   name: string;
   category: string;
-  date: string;
-  status: "approved" | "pending" | "action";
-  requiredFor: string;
+  uploaded_at: string | null;
+  status: "missing" | "action_required" | "pending_verification" | "approved";
+  required_for: string;
+  file_url?: string;
 }
 
 interface NotificationItem {
-  id: number;
+  id: string;
   title: string;
   description: string;
-  time: string;
-  type: "info" | "alert" | "success";
-  read: boolean;
+  created_at: string;
+  is_read: boolean;
+}
+
+interface ChatMessage {
+  id: string;
+  sender_id: string;
+  recipient_id: string;
+  message_text: string;
+  created_at: string;
+}
+
+function getInitialChecklist(serviceType: string) {
+  if (serviceType === "study") {
+    return [
+      { name: "Passeport (Page d'identité)", category: "Identité", status: "missing", requiredFor: "Admission & Visa" },
+      { name: "Lettre d'admission - UdeM", category: "Académique", status: "missing", requiredFor: "Visa & Inscription" },
+      { name: "Justificatif de ressources financières (Garant)", category: "Finances", status: "action_required", requiredFor: "Demande de Visa CAQ" },
+      { name: "Formulaire de de Visa d'études", category: "Visa", status: "missing", requiredFor: "Ambassade" },
+      { name: "Relevés de notes universitaires", category: "Académique", status: "missing", requiredFor: "Admission" }
+    ];
+  } else if (serviceType === "omra") {
+    return [
+      { name: "Passeport en cours de validité (> 6 mois)", category: "Identité", status: "action_required", requiredFor: "Visa Omra" },
+      { name: "Attestation de vaccination méningite", category: "Médical", status: "missing", requiredFor: "Autorités" },
+      { name: "Photo d'identité fond blanc", category: "Identité", status: "action_required", requiredFor: "Formulaire Visa" }
+    ];
+  } else {
+    return [
+      { name: "Copie de Passeport", category: "Identité", status: "action_required", requiredFor: "Réservation vol & hôtel" },
+      { name: "Formulaire d'inclusions signé", category: "Contrat", status: "missing", requiredFor: "Validation dossier" },
+      { name: "Justificatif d'acompte (30%)", category: "Finances", status: "action_required", requiredFor: "Réservation définitive" }
+    ];
+  }
 }
 
 export default function PortalPage() {
@@ -46,128 +81,305 @@ export default function PortalPage() {
   const [uploadMessage, setUploadMessage] = useState("");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   
-  // Mock Counselor Messages
-  const [messages, setMessages] = useState<Array<{ sender: "user" | "counselor"; text: string; time: string }>>([
-    { sender: "counselor", text: "Bonjour ! J'ai passé en revue votre dossier d'admission pour l'UdeM. Tout semble parfait, il ne manque que votre justificatif financier pour qu'on soumette la demande de visa CAQ.", time: "Hier, 14:32" }
-  ]);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [profile, setProfile] = useState<any>(null);
+  const [application, setApplication] = useState<any>(null);
+  const [documents, setDocuments] = useState<DocumentItem[]>([]);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMsg, setNewMsg] = useState("");
+  const [loadingData, setLoadingData] = useState(true);
 
-  // Mock Documents Status State
-  const [documents, setDocuments] = useState<DocumentItem[]>([
-    { id: 1, name: "Passeport (Page d'identité)", category: "Identité", date: "12 Juin 2026", status: "approved", requiredFor: "Admission & Visa" },
-    { id: 2, name: "Lettre d'admission - UdeM", category: "Académique", date: "20 Juin 2026", status: "approved", requiredFor: "Visa & Inscription" },
-    { id: 3, name: "Justificatif de ressources financières (Garant)", category: "Finances", date: "Non soumis", status: "action", requiredFor: "Demande de Visa CAQ" },
-    { id: 4, name: "Formulaire de demande de Visa d'études", category: "Visa", date: "05 Juillet 2026", status: "pending", requiredFor: "Ambassade" },
-    { id: 5, name: "Relevés de notes universitaires", category: "Académique", date: "15 Juin 2026", status: "approved", requiredFor: "Admission" }
-  ]);
+  const supabase = createClient();
 
-  // Mock Notifications State
-  const [notifications, setNotifications] = useState<NotificationItem[]>([
-    { id: 1, title: "Dossier financier requis", description: "Votre conseiller Sarah a demandé un justificatif de fonds pour le visa d'études canadien.", time: "Il y a 2 heures", type: "alert", read: false },
-    { id: 2, title: "Admission confirmée !", description: "Félicitations, votre lettre d'admission de l'Université de Montréal a été validée par notre équipe.", time: "Hier", type: "success", read: true },
-    { id: 3, title: "Mise à jour de votre demande", description: "Les frais d'ouverture de dossier pour la session d'Automne ont été réglés.", time: "Il y a 3 jours", type: "info", read: true }
-  ]);
+  useEffect(() => {
+    const initPortal = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        setLoadingData(false);
+        return;
+      }
+      setUser(session.user);
+
+      // Fetch user profile + assigned advisor name
+      const { data: prof } = await supabase
+        .from("profiles")
+        .select(`
+          id, email, name, role,
+          client_profiles (
+            dossier_number,
+            selected_service,
+            assigned_advisor_id
+          )
+        `)
+        .eq("id", session.user.id)
+        .single();
+      
+      let advisorName = "Non assigné";
+      if (prof?.client_profiles?.[0]?.assigned_advisor_id) {
+        const { data: adv } = await supabase
+          .from("profiles")
+          .select("name")
+          .eq("id", prof.client_profiles[0].assigned_advisor_id)
+          .single();
+        advisorName = adv?.name || "Non assigné";
+      }
+
+      const fullProfile = {
+        ...prof,
+        client_profiles: prof?.client_profiles?.[0] || null,
+        advisorName
+      };
+      setProfile(fullProfile);
+
+      // Fetch active application
+      const { data: apps } = await supabase
+        .from("applications")
+        .select("*")
+        .eq("client_id", session.user.id)
+        .order("created_at", { ascending: false });
+
+      let activeApp = apps?.[0];
+
+      if (!activeApp && fullProfile?.client_profiles) {
+        // Automatically bootstrap first application if empty
+        const sType = fullProfile.client_profiles.selected_service;
+        const defaultTitle = sType === "study" ? "Session d'Automne 2026" : sType === "omra" ? "Formule Omra 2026" : "Voyage Touristique";
+        const defaultDest = sType === "study" ? "Université de Montréal (UdeM)" : sType === "omra" ? "Makkah & Madinah" : "Maldives Prestige";
+        
+        const { data: newApp } = await supabase
+          .from("applications")
+          .insert({
+            client_id: session.user.id,
+            service_type: sType,
+            title: defaultTitle,
+            destination: defaultDest,
+            status: "pending_documents",
+            next_deadline_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+            next_deadline_label: sType === "study" ? "Date limite CAQ" : sType === "omra" ? "Dépôt Passeport" : "Acompte",
+          })
+          .select()
+          .single();
+        activeApp = newApp;
+      }
+      setApplication(activeApp);
+
+      if (activeApp) {
+        // Fetch or bootstrap documents checklist
+        const { data: docs } = await supabase
+          .from("documents")
+          .select("*")
+          .eq("application_id", activeApp.id)
+          .order("created_at", { ascending: true });
+
+        if (!docs || docs.length === 0) {
+          const checklist = getInitialChecklist(activeApp.service_type);
+          const toInsert = checklist.map(item => ({
+            application_id: activeApp.id,
+            name: item.name,
+            category: item.category,
+            status: item.status,
+            required_for: item.requiredFor
+          }));
+          
+          const { data: inserted } = await supabase
+            .from("documents")
+            .insert(toInsert)
+            .select();
+          setDocuments(inserted || []);
+        } else {
+          setDocuments(docs);
+        }
+      }
+
+      // Fetch user notifications
+      const { data: notifs } = await supabase
+        .from("notifications")
+        .select("*")
+        .eq("user_id", session.user.id)
+        .order("created_at", { ascending: false });
+      setNotifications(notifs || []);
+
+      // Fetch user chat messages
+      const { data: msgs } = await supabase
+        .from("chat_messages")
+        .select("*")
+        .or(`sender_id.eq.${session.user.id},recipient_id.eq.${session.user.id}`)
+        .order("created_at", { ascending: true });
+      setMessages(msgs || []);
+      
+      setLoadingData(false);
+    };
+
+    initPortal();
+  }, [supabase]);
+
+  // Real-time Chat Subscription
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel(`room_${user.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "chat_messages"
+        },
+        (payload) => {
+          const newMsg = payload.new as ChatMessage;
+          if (newMsg.sender_id === user.id || newMsg.recipient_id === user.id) {
+            setMessages(prev => {
+              if (prev.some(m => m.id === newMsg.id)) return prev;
+              return [...prev, newMsg];
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, supabase]);
 
   const triggerToast = (msg: string) => {
     setToastMessage(msg);
-    setTimeout(() => {
-      setToastMessage(null);
-    }, 5000);
+    setTimeout(() => setToastMessage(null), 5000);
   };
 
-  // Simulating document upload animation
-  const handleMockUpload = (docId: number) => {
-    if (isUploading) return;
-    setIsUploading(true);
-    setUploadProgress(0);
-    setUploadMessage("Sélection du fichier...");
+  const handleFileUpload = (docId: string) => {
+    if (isUploading || !user || !application) return;
 
-    // Stage 1: Reading file
-    setTimeout(() => {
-      setUploadMessage("Scan antivirus & chiffrement SSL...");
-      setUploadProgress(35);
-    }, 600);
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".pdf,.jpg,.jpeg,.png";
+    input.onchange = async (e: any) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
 
-    // Stage 2: Transferring
-    setTimeout(() => {
-      setUploadMessage("Téléversement sur l'espace sécurisé Land Travel...");
-      setUploadProgress(70);
-    }, 1300);
+      if (file.size > 10 * 1024 * 1024) {
+        triggerToast("❌ Le fichier dépasse la limite autorisée de 10 Mo.");
+        return;
+      }
 
-    // Stage 3: Complete
-    setTimeout(() => {
-      setUploadProgress(100);
-      setUploadMessage("Finalisation...");
-      
-      setTimeout(() => {
-        // Update document state
-        setDocuments(prev => 
-          prev.map(doc => 
-            doc.id === docId 
-              ? { ...doc, status: "pending", date: "Aujourd'hui, 23:28" }
-              : doc
-          )
-        );
+      setIsUploading(true);
+      setUploadProgress(10);
+      setUploadMessage("Lecture du fichier...");
 
-        // Update notification
-        setNotifications(prev => [
-          {
-            id: Date.now(),
-            title: "Document téléversé",
-            description: "Justificatif de ressources financières a été soumis et est en cours d'analyse.",
-            time: "À l'instant",
-            type: "success",
-            read: false
-          },
-          ...prev
-        ]);
+      try {
+        const fileExt = file.name.split(".").pop();
+        const filePath = `${user.id}/${docId}_${Date.now()}.${fileExt}`;
 
+        setUploadMessage("Téléversement sur Supabase Storage...");
+        setUploadProgress(40);
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("dossiers")
+          .upload(filePath, file, {
+            cacheControl: "3600",
+            upsert: true,
+          });
+
+        if (uploadError) throw uploadError;
+
+        setUploadProgress(80);
+        setUploadMessage("Enregistrement en base de données...");
+
+        const fileUrl = uploadData.path;
+        const { error: dbError } = await supabase
+          .from("documents")
+          .update({
+            file_url: fileUrl,
+            status: "pending_verification",
+            uploaded_at: new Date().toISOString(),
+          })
+          .eq("id", docId);
+
+        if (dbError) throw dbError;
+
+        // Refresh documents
+        const { data: updatedDocs } = await supabase
+          .from("documents")
+          .select("*")
+          .eq("application_id", application.id)
+          .order("created_at", { ascending: true });
+        setDocuments(updatedDocs || []);
+
+        // Create notification
+        await supabase.from("notifications").insert({
+          user_id: user.id,
+          title: "Document téléversé",
+          description: "Un justificatif a été soumis et est en attente de vérification.",
+          is_read: false,
+        });
+
+        // Refresh notifications
+        const { data: updatedNotifs } = await supabase
+          .from("notifications")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false });
+        setNotifications(updatedNotifs || []);
+
+        setUploadProgress(100);
+        triggerToast("🎉 Document téléversé avec succès ! Statut en cours de vérification.");
+      } catch (err: any) {
+        console.error(err);
+        triggerToast("❌ Échec du téléversement : " + err.message);
+      } finally {
         setIsUploading(false);
-        triggerToast("🎉 Votre document financier a été téléversé avec succès ! Statut mis à jour : En attente de vérification.");
-      }, 500);
-    }, 2200);
+        setUploadProgress(0);
+      }
+    };
+    input.click();
   };
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMsg.trim()) return;
+    if (!newMsg.trim() || !user || !profile) return;
 
-    const userMessage = { sender: "user" as const, text: newMsg, time: "À l'instant" };
-    setMessages(prev => [...prev, userMessage]);
+    const advisorId = profile.client_profiles?.assigned_advisor_id;
+    const recipientId = advisorId || "00000000-0000-0000-0000-000000000000"; // default admin UUID
+
+    const messageText = newMsg;
     setNewMsg("");
 
-    // Simulate quick automatic counselor response
-    setTimeout(() => {
-      setMessages(prev => [
-        ...prev,
-        { 
-          sender: "counselor" as const, 
-          text: "Merci pour votre message ! J'examine votre document dès que possible et je vous tiens informé par notification.", 
-          time: "À l'instant" 
-        }
-      ]);
-      
-      // Update notification
-      setNotifications(prev => [
-        {
-          id: Date.now(),
-          title: "Nouveau message de Sarah",
-          description: "Votre conseiller Sarah a répondu à votre chat.",
-          time: "À l'instant",
-          type: "info",
-          read: false
-        },
-        ...prev
-      ]);
-    }, 1500);
+    const { error } = await supabase.from("chat_messages").insert({
+      sender_id: user.id,
+      recipient_id: recipientId,
+      message_text: messageText,
+      is_read: false,
+    });
+
+    if (error) {
+      triggerToast("❌ Impossible d'envoyer le message : " + error.message);
+    }
   };
 
-  const markAllRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  const markAllRead = async () => {
+    if (!user) return;
+    const { error } = await supabase
+      .from("notifications")
+      .update({ is_read: true })
+      .eq("user_id", user.id);
+
+    if (error) {
+      triggerToast("❌ Impossible de mettre à jour les notifications.");
+      return;
+    }
+
+    setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
     triggerToast("Toutes les notifications ont été marquées comme lues.");
   };
 
-  const getStatusBadge = (status: "approved" | "pending" | "action") => {
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    window.location.href = "/";
+  };
+
+  const getStatusBadge = (status: DocumentItem["status"]) => {
     switch (status) {
       case "approved":
         return (
@@ -176,27 +388,46 @@ export default function PortalPage() {
             Approuvé
           </span>
         );
-      case "pending":
+      case "pending_verification":
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100">
             <Clock className="w-3.5 h-3.5 animate-pulse" />
-            En attente
+            En vérification
           </span>
         );
-      case "action":
+      case "action_required":
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-100">
             <AlertCircle className="w-3.5 h-3.5" />
             Action Requis
           </span>
         );
+      case "missing":
+      default:
+        return (
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-50 text-slate-500 border border-slate-100">
+            <X className="w-3.5 h-3.5" />
+            Non soumis
+          </span>
+        );
     }
   };
+
+  if (loadingData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="text-center space-y-4">
+          <Loader2 className="w-10 h-10 animate-spin text-primary mx-auto" />
+          <p className="text-sm font-semibold text-neutral-500">Chargement de votre portail sécurisé...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Calculate statistics
   const totalDocs = documents.length;
   const approvedDocs = documents.filter(d => d.status === "approved").length;
-  const progressPercent = Math.round((approvedDocs / totalDocs) * 100);
+  const progressPercent = totalDocs > 0 ? Math.round((approvedDocs / totalDocs) * 100) : 0;
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col md:flex-row font-sans">
@@ -229,13 +460,17 @@ export default function PortalPage() {
             <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 font-semibold text-sm transition-all">
               <FileText className="w-4 h-4" />
               <span>Mon Dossier</span>
-              <span className="ml-auto text-xs bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded-md">1</span>
+              {documents.some(d => d.status === "action_required") && (
+                <span className="ml-auto text-xs bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded-md">
+                  {documents.filter(d => d.status === "action_required").length}
+                </span>
+              )}
             </a>
             <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 font-semibold text-sm transition-all">
               <Briefcase className="w-4 h-4" />
               <span>Mes Programmes</span>
             </a>
-            <a href="#" className="flex items-center gap-3 px-4 py-3 rounded-xl text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 font-semibold text-sm transition-all">
+            <a href="#chat-box" className="flex items-center gap-3 px-4 py-3 rounded-xl text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 font-semibold text-sm transition-all">
               <MessageSquare className="w-4 h-4" />
               <span>Messages</span>
             </a>
@@ -248,17 +483,17 @@ export default function PortalPage() {
             <div className="flex items-center gap-3 mb-2">
               <div className="relative">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-xs">
-                  SC
+                  {profile?.advisorName?.slice(0, 2).toUpperCase() || "LT"}
                 </div>
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
               </div>
               <div>
-                <span className="font-bold text-neutral-800 text-xs block">Sarah Costanza</span>
-                <span className="text-[10px] text-neutral-400 font-semibold block">Votre conseillère études</span>
+                <span className="font-bold text-neutral-800 text-xs block">{profile?.advisorName || "Land Travel Advisor"}</span>
+                <span className="text-[10px] text-neutral-400 font-semibold block">Votre conseiller</span>
               </div>
             </div>
             <p className="text-[11px] text-neutral-500 leading-normal mb-3">
-              Sarah est en ligne. Besoin d&apos;aide sur votre dossier ?
+              Besoin d&apos;aide sur la constitution de vos pièces ? Discutez en direct.
             </p>
             <a 
               href="#chat-box" 
@@ -268,13 +503,13 @@ export default function PortalPage() {
             </a>
           </div>
 
-          <Link 
-            href="/" 
-            className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 font-bold text-sm transition-all"
+          <button 
+            onClick={handleSignOut}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 font-bold text-sm transition-all cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
             <span>Déconnexion</span>
-          </Link>
+          </button>
         </div>
       </aside>
 
@@ -289,11 +524,11 @@ export default function PortalPage() {
               <span>•</span>
               <span className="text-primary flex items-center gap-1">
                 <GraduationCap className="w-3.5 h-3.5" />
-                Études à l&apos;étranger
+                {application?.service_type === "study" ? "Études à l'étranger" : application?.service_type === "omra" ? "Pèlerinage Omra" : "Tourisme"}
               </span>
             </div>
             <h1 className="text-2xl font-black text-neutral-900 tracking-tight">
-              Bonjour, Alexandre ! 👋
+              Bonjour, {profile?.name} ! 👋
             </h1>
           </div>
 
@@ -301,18 +536,18 @@ export default function PortalPage() {
           <div className="flex items-center gap-4">
             <button className="relative w-10 h-10 rounded-xl border border-neutral-200 hover:bg-neutral-50 flex items-center justify-center text-neutral-600 transition-colors">
               <Bell className="w-5 h-5" />
-              {notifications.some(n => !n.read) && (
+              {notifications.some(n => !n.is_read) && (
                 <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-red-500 border border-white" />
               )}
             </button>
 
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-orange text-white font-black flex items-center justify-center shadow-md shadow-orange/15">
-                AL
+              <div className="w-10 h-10 rounded-xl bg-[#0060ff] text-white font-black flex items-center justify-center shadow-md">
+                {profile?.name?.slice(0, 2).toUpperCase() || "AL"}
               </div>
               <div className="hidden sm:block">
-                <span className="font-bold text-neutral-800 text-sm block">Alexandre Laroche</span>
-                <span className="text-xs text-neutral-400 block">Dossier #LT-4289</span>
+                <span className="font-bold text-neutral-800 text-sm block">{profile?.name}</span>
+                <span className="text-xs text-neutral-400 block">Dossier #{profile?.client_profiles?.dossier_number || "Non généré"}</span>
               </div>
             </div>
           </div>
@@ -350,7 +585,6 @@ export default function PortalPage() {
               </span>
             </div>
             
-            {/* Progress Circular Graphic */}
             <div className="relative w-16 h-16">
               <svg className="w-full h-full transform -rotate-90">
                 <circle cx="32" cy="32" r="26" className="stroke-neutral-100 fill-none" strokeWidth="4" />
@@ -358,7 +592,7 @@ export default function PortalPage() {
                   cx="32" 
                   cy="32" 
                   r="26" 
-                  className="stroke-primary fill-none" 
+                  className="stroke-[#0060ff] fill-none" 
                   strokeWidth="4" 
                   strokeDasharray={2 * Math.PI * 26}
                   initial={{ strokeDashoffset: 2 * Math.PI * 26 }}
@@ -377,13 +611,13 @@ export default function PortalPage() {
           <div className="bg-white p-5 rounded-2xl border border-neutral-100 shadow-sm">
             <span className="text-xs text-neutral-400 font-bold block mb-1">PROJET ACTIF</span>
             <span className="text-base font-black text-neutral-900 block leading-tight">
-              Session d&apos;Automne 2026
+              {application?.title || "Aucun projet actif"}
             </span>
             <span className="text-xs text-neutral-500 block mt-1">
-              Université de Montréal (UdeM)
+              {application?.destination || "Aucune destination"}
             </span>
-            <span className="inline-block mt-3 px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary">
-              En cours d&apos;analyse visa
+            <span className="inline-block mt-3 px-2 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary capitalize">
+              {application?.status?.replace("_", " ")}
             </span>
           </div>
 
@@ -392,26 +626,30 @@ export default function PortalPage() {
             <span className="text-xs text-neutral-400 font-bold block mb-1">PROCHAINE DEADLINE</span>
             <div className="flex items-center gap-2 mt-1">
               <Calendar className="w-5 h-5 text-neutral-400" />
-              <span className="text-base font-black text-neutral-900">15 Juillet 2026</span>
+              <span className="text-base font-black text-neutral-900">
+                {application?.next_deadline_date ? new Date(application.next_deadline_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }) : "Non planifiée"}
+              </span>
             </div>
-            <span className="text-xs text-red-500 font-semibold block mt-1.5">
-              ⚠️ Date limite dépôt CAQ (7 jours)
-            </span>
+            {application?.next_deadline_label && (
+              <span className="text-xs text-red-500 font-semibold block mt-1.5">
+                ⚠️ {application.next_deadline_label}
+              </span>
+            )}
           </div>
 
           {/* Remaining action items */}
           <div className="bg-white p-5 rounded-2xl border border-neutral-100 shadow-sm">
             <span className="text-xs text-neutral-400 font-bold block mb-1">ACTIONS REQUISES</span>
             <span className="text-2xl font-black text-neutral-950 flex items-center gap-1.5">
-              {documents.filter(d => d.status === "action").length}
-              {documents.filter(d => d.status === "action").length > 0 && (
+              {documents.filter(d => d.status === "action_required").length}
+              {documents.filter(d => d.status === "action_required").length > 0 && (
                 <span className="inline-block w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />
               )}
             </span>
             <span className="text-xs text-neutral-500 block mt-1">
-              {documents.filter(d => d.status === "action").length > 0 
-                ? "Dossier financier en attente d'upload" 
-                : "Aucune action requise !"}
+              {documents.filter(d => d.status === "action_required").length > 0 
+                ? "Pièces justificatives en attente d'upload" 
+                : "Votre dossier est à jour !"}
             </span>
           </div>
         </section>
@@ -424,9 +662,9 @@ export default function PortalPage() {
             <div className="flex justify-between items-center">
               <div>
                 <h2 className="text-lg font-black text-neutral-900 tracking-tight">Suivi des Soumissions</h2>
-                <p className="text-xs text-neutral-500">Mettez à jour vos pièces justificatives demandées par l&apos;ambassade.</p>
+                <p className="text-xs text-neutral-500">Mettez à jour vos pièces justificatives demandées par nos conseillers.</p>
               </div>
-              <span className="text-xs font-bold text-neutral-400">5 documents au total</span>
+              <span className="text-xs font-bold text-neutral-400">{documents.length} documents requis</span>
             </div>
 
             {/* Document List Table */}
@@ -448,16 +686,18 @@ export default function PortalPage() {
                         <td className="p-4 font-bold text-neutral-800">
                           <div className="flex flex-col">
                             <span>{doc.name}</span>
-                            <span className="text-[10px] text-neutral-400 font-medium">Requis pour: {doc.requiredFor}</span>
+                            <span className="text-[10px] text-neutral-400 font-medium">Requis pour: {doc.required_for}</span>
                           </div>
                         </td>
                         <td className="p-4 text-neutral-500 font-medium">{doc.category}</td>
-                        <td className="p-4 text-neutral-500 font-medium">{doc.date}</td>
+                        <td className="p-4 text-neutral-500 font-medium">
+                          {doc.uploaded_at ? new Date(doc.uploaded_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "Non soumis"}
+                        </td>
                         <td className="p-4">{getStatusBadge(doc.status)}</td>
                         <td className="p-4 text-right">
-                          {doc.status === "action" ? (
+                          {doc.status === "action_required" || doc.status === "missing" ? (
                             <button
-                              onClick={() => handleMockUpload(doc.id)}
+                              onClick={() => handleFileUpload(doc.id)}
                               disabled={isUploading}
                               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold text-xs shadow-sm hover:shadow-md transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
                             >
@@ -479,7 +719,7 @@ export default function PortalPage() {
               </div>
             </div>
 
-            {/* MOCK UPLOADING SIMULATOR */}
+            {/* REAL UPLOADING SIMULATOR */}
             <AnimatePresence>
               {isUploading && (
                 <motion.div
@@ -490,7 +730,7 @@ export default function PortalPage() {
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-black text-neutral-700 uppercase tracking-wider flex items-center gap-2">
-                      <span className="inline-block w-2 h-2 rounded-full bg-primary animate-ping" />
+                      <span className="inline-block w-2.5 h-2.5 rounded-full bg-primary animate-ping" />
                       {uploadMessage}
                     </span>
                     <span className="text-xs font-bold text-primary">{uploadProgress}%</span>
@@ -510,9 +750,9 @@ export default function PortalPage() {
             <div className="bg-primary/5 rounded-2xl p-4 border border-primary/10 flex items-start gap-3">
               <HelpCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
               <div>
-                <span className="font-bold text-primary text-xs block mb-1">Directives pour les documents financiers</span>
+                <span className="font-bold text-primary text-xs block mb-1">Directives de téléversement sécurisé</span>
                 <p className="text-[11px] text-neutral-600 leading-relaxed">
-                  Veuillez téléverser un relevé de compte bancaire des 3 derniers mois montrant un solde supérieur à 15 000 CAD (ou l&apos;équivalent en DZD/EUR) ou une attestation de prise en charge par votre garant dument signée. Format accepté: PDF uniquement, max 10 Mo.
+                  Formats acceptés : PDF, PNG, JPEG. Taille maximale par fichier : 10 Mo. Vos documents sont chiffrés et transmis de manière sécurisée uniquement à votre conseiller.
                 </p>
               </div>
             </div>
@@ -536,70 +776,82 @@ export default function PortalPage() {
                 </button>
               </div>
 
-              <div className="space-y-3">
-                {notifications.map((notif) => (
-                  <div 
-                    key={notif.id} 
-                    className={`p-3.5 rounded-2xl border transition-all text-xs flex items-start gap-3 ${
-                      notif.read 
-                        ? "bg-white border-neutral-100 text-neutral-600" 
-                        : "bg-primary/5 border-primary/10 text-neutral-800"
-                    }`}
-                  >
-                    <span className="mt-0.5">
-                      {notif.type === "alert" && <AlertCircle className="w-4 h-4 text-amber-600" />}
-                      {notif.type === "success" && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
-                      {notif.type === "info" && <Clock className="w-4 h-4 text-primary" />}
-                    </span>
-                    <div className="space-y-0.5 flex-1">
-                      <div className="flex justify-between items-center">
-                        <span className="font-bold text-neutral-900">{notif.title}</span>
-                        <span className="text-[9px] text-neutral-400 font-medium">{notif.time}</span>
+              <div className="space-y-3 max-h-[220px] overflow-y-auto pr-1">
+                {notifications.length === 0 ? (
+                  <p className="text-neutral-400 text-center py-6 italic text-xs">Aucune notification.</p>
+                ) : (
+                  notifications.map((notif) => (
+                    <div 
+                      key={notif.id} 
+                      className={`p-3.5 rounded-2xl border transition-all text-xs flex items-start gap-3 ${
+                        notif.is_read 
+                          ? "bg-white border-neutral-100 text-neutral-600" 
+                          : "bg-primary/5 border-primary/10 text-neutral-800"
+                      }`}
+                    >
+                      <span className="mt-0.5">
+                        <Clock className="w-4 h-4 text-primary" />
+                      </span>
+                      <div className="space-y-0.5 flex-1">
+                        <div className="flex justify-between items-center">
+                          <span className="font-bold text-neutral-900">{notif.title}</span>
+                          <span className="text-[9px] text-neutral-400 font-medium">
+                            {new Date(notif.created_at).toLocaleDateString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
+                          </span>
+                        </div>
+                        <p className="text-neutral-500 leading-normal text-[11px]">{notif.description}</p>
                       </div>
-                      <p className="text-neutral-500 leading-normal text-[11px]">{notif.description}</p>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
 
-            {/* COUNSELOR QUICK MESSENGER */}
+            {/* COUNSELOR REALTIME MESSENGER */}
             <div id="chat-box" className="bg-white rounded-3xl border border-neutral-100 shadow-sm overflow-hidden flex flex-col h-[340px]">
               {/* Chat Header */}
               <div className="p-4 bg-neutral-950 text-white flex items-center gap-3">
                 <div className="relative">
                   <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white font-black text-xs">
-                    SC
+                    {profile?.advisorName?.slice(0, 2).toUpperCase() || "LT"}
                   </div>
                   <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-neutral-950" />
                 </div>
                 <div>
-                  <span className="font-bold text-xs block text-white">Sarah Costanza</span>
-                  <span className="text-[9px] text-neutral-400 font-bold block uppercase tracking-wider">Conseillère d&apos;études</span>
+                  <span className="font-bold text-xs block text-white">{profile?.advisorName || "Conseiller Land Travel"}</span>
+                  <span className="text-[9px] text-neutral-400 font-bold block uppercase tracking-wider">Votre messagerie d&apos;aide</span>
                 </div>
               </div>
 
               {/* Chat Messages */}
               <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-neutral-50 text-xs">
-                {messages.map((m, index) => (
-                  <div 
-                    key={index}
-                    className={`flex flex-col max-w-[85%] ${
-                      m.sender === "user" ? "ml-auto items-end" : "mr-auto items-start"
-                    }`}
-                  >
+                {messages.length === 0 ? (
+                  <div className="text-center py-10 text-neutral-400 italic">
+                    Aucun message. Commencez la discussion ci-dessous.
+                  </div>
+                ) : (
+                  messages.map((m) => (
                     <div 
-                      className={`p-3 rounded-2xl leading-relaxed ${
-                        m.sender === "user" 
-                          ? "bg-primary text-white rounded-tr-none" 
-                          : "bg-white text-neutral-800 border border-neutral-200/50 rounded-tl-none"
+                      key={m.id}
+                      className={`flex flex-col max-w-[85%] ${
+                        m.sender_id === user?.id ? "ml-auto items-end" : "mr-auto items-start"
                       }`}
                     >
-                      <p>{m.text}</p>
+                      <div 
+                        className={`p-3 rounded-2xl leading-relaxed ${
+                          m.sender_id === user?.id 
+                            ? "bg-primary text-white rounded-tr-none" 
+                            : "bg-white text-neutral-800 border border-neutral-200/50 rounded-tl-none"
+                        }`}
+                      >
+                        <p>{m.message_text}</p>
+                      </div>
+                      <span className="text-[9px] text-neutral-400 mt-1 px-1">
+                        {new Date(m.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
+                      </span>
                     </div>
-                    <span className="text-[9px] text-neutral-400 mt-1 px-1">{m.time}</span>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
 
               {/* Chat Input */}

@@ -1,10 +1,12 @@
 import DestinationDetailPageClient from "@/components/tourism/DestinationDetailPageClient";
-import { tourismDestinations } from "@/lib/site-data";
+import { getTourismDestinations } from "@/lib/content/public-content";
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const tourismDestinations = await getTourismDestinations();
   return tourismDestinations.map((destination) => ({ id: destination.id }));
 }
 
-export default function ServicesDestinationDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  return <DestinationDetailPageClient params={params} />;
+export default async function ServicesDestinationDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const tourismDestinations = await getTourismDestinations();
+  return <DestinationDetailPageClient params={params} destinations={tourismDestinations} />;
 }

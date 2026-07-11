@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, Compass, Eye, GraduationCap, Heart, Loader2, Mail, User } from "lucide-react";
+import { ArrowLeft, Compass, Eye, GraduationCap, Heart, Loader2, Mail, ShieldCheck, User } from "lucide-react";
 import styles from "./login.module.css";
+import { createClient } from "@/lib/supabase/client";
 
 type AuthMode = "login" | "signup";
 type ServiceId = "study" | "tourism" | "omra";
@@ -17,24 +18,33 @@ const services: Array<{ id: ServiceId; label: string; icon: typeof GraduationCap
   { id: "omra", label: "Omra", icon: Heart },
 ];
 
-export function AuthPage({ initialMode = "login" }: { initialMode?: AuthMode }) {
+export function AuthPage({ initialMode = "login", admin = false }: { initialMode?: AuthMode; admin?: boolean }) {
   const router = useRouter();
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(admin ? "" : "");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
   const [selectedService, setSelectedService] = useState<ServiceId>("study");
   const [isLoading, setIsLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
 
-  const isSignup = mode === "signup";
+  const isSignup = !admin && mode === "signup";
   const loadingMessages = isSignup
     ? [
         "Creating your account...",
         "Preparing your secure portal...",
         "Building your first checklist...",
         "Your space is ready.",
+      ]
+    : admin
+    ? [
+        "Verifying admin credentials...",
+        "Creating secure admin session...",
+        "Loading control panel...",
+        "Admin panel ready.",
       ]
     : [
         "Securing your session...",
@@ -44,31 +54,98 @@ export function AuthPage({ initialMode = "login" }: { initialMode?: AuthMode }) 
       ];
 
   const handleModeChange = (nextMode: AuthMode) => {
+    if (admin) return;
     setMode(nextMode);
     setIsLoading(false);
     setLoadingStep(0);
+    setErrorMsg("");
+    setSuccessMsg("");
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setErrorMsg("");
+    setSuccessMsg("");
 
     if (!email || !password || (isSignup && (!name || !selectedService))) {
       return;
     }
 
     setIsLoading(true);
+    const supabase = createClient();
 
-    const interval = window.setInterval(() => {
-      setLoadingStep((step) => {
-        if (step >= 3) {
-          window.clearInterval(interval);
-          window.setTimeout(() => router.push("/portal"), 350);
-          return step;
+    try {
+      if (isSignup) {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              name,
+              fullName: name,
+              role: "client",
+              selectedService,
+            },
+          },
+        });
+
+        if (error) {
+          setErrorMsg(error.message);
+          setIsLoading(false);
+          return;
         }
 
-        return step + 1;
-      });
-    }, 450);
+        // If email confirmation is enabled, session will be null
+        if (data.user && !data.session) {
+          setIsLoading(false);
+          setSuccessMsg("Inscription réussie ! Veuillez vérifier vos e-mails pour valider votre compte.");
+          return;
+        }
+      } else {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) {
+          setErrorMsg(error.message);
+          setIsLoading(false);
+          return;
+        }
+
+        if (admin) {
+          // Check role to prevent client login to admin dashboard
+          const { data: profile, error: roleError } = await supabase
+            .from("profiles")
+            .select("role")
+            .eq("id", data.user?.id)
+            .single();
+
+          if (roleError || !profile || (profile.role !== "admin" && profile.role !== "advisor")) {
+            await supabase.auth.signOut();
+            setErrorMsg("Accès refusé : vous ne disposez pas des droits d'administrateur.");
+            setIsLoading(false);
+            return;
+          }
+        }
+      }
+
+      // Succeeded! Run the loading animation
+      const interval = window.setInterval(() => {
+        setLoadingStep((step) => {
+          if (step >= 3) {
+            window.clearInterval(interval);
+            window.setTimeout(() => router.push(admin ? "/admin" : "/portal"), 350);
+            return step;
+          }
+          return step + 1;
+        });
+      }, 450);
+
+    } catch (e: any) {
+      setErrorMsg("Une erreur s'est produite lors de l'authentification.");
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -88,28 +165,77 @@ export function AuthPage({ initialMode = "login" }: { initialMode?: AuthMode }) 
             </Link>
 
             <div className={styles.heading}>
-              <h1>{isSignup ? "Start Your Journey!" : "Welcome Back Traveler!"}</h1>
-              <p>{isSignup ? "Create your client portal in a few seconds" : "We are happy to see you again"}</p>
+              <h1>{admin ? "Admin Control Panel" : isSignup ? "Start Your Journey!" : "Welcome Back Traveler!"}</h1>
+              <p>
+                {admin
+                  ? "Sign in with your admin email and password"
+                  : isSignup
+                    ? "Create your client portal in a few seconds"
+                    : "We are happy to see you again"}
+              </p>
             </div>
 
-            <div className={styles.segmented} aria-label="Authentication mode">
-              <button
-                className={!isSignup ? styles.segmentActive : ""}
-                type="button"
-                onClick={() => handleModeChange("login")}
-                aria-pressed={!isSignup}
-              >
-                Sign in
-              </button>
-              <button
-                className={isSignup ? styles.segmentActive : ""}
-                type="button"
-                onClick={() => handleModeChange("signup")}
-                aria-pressed={isSignup}
-              >
-                Sign Up
-              </button>
-            </div>
+            {admin ? (
+              <div className={styles.segmented} aria-label="Admin access mode">
+                <button className={styles.segmentActive} type="button" aria-pressed="true">
+                  <ShieldCheck size={16} aria-hidden="true" />
+                  Admin access
+                </button>
+              </div>
+            ) : (
+              <div className={styles.segmented} aria-label="Authentication mode">
+                <button
+                  className={!isSignup ? styles.segmentActive : ""}
+                  type="button"
+                  onClick={() => handleModeChange("login")}
+                  aria-pressed={!isSignup}
+                >
+                  Sign in
+                </button>
+                <button
+                  className={isSignup ? styles.segmentActive : ""}
+                  type="button"
+                  onClick={() => handleModeChange("signup")}
+                  aria-pressed={isSignup}
+                >
+                  Sign Up
+                </button>
+              </div>
+            )}
+
+            {/* Error Message Box */}
+            {errorMsg && (
+              <div style={{
+                color: "#ef4444",
+                backgroundColor: "rgba(239, 68, 68, 0.08)",
+                border: "1px solid rgba(239, 68, 68, 0.16)",
+                borderRadius: "12px",
+                padding: "14px",
+                fontSize: "14px",
+                fontWeight: "600",
+                marginBottom: "20px",
+                textAlign: "left"
+              }}>
+                {errorMsg}
+              </div>
+            )}
+
+            {/* Success Message Box */}
+            {successMsg && (
+              <div style={{
+                color: "#10b981",
+                backgroundColor: "rgba(16, 185, 129, 0.08)",
+                border: "1px solid rgba(16, 185, 129, 0.16)",
+                borderRadius: "12px",
+                padding: "14px",
+                fontSize: "14px",
+                fontWeight: "600",
+                marginBottom: "20px",
+                textAlign: "left"
+              }}>
+                {successMsg}
+              </div>
+            )}
 
             <AnimatePresence mode="wait">
               {!isLoading ? (
@@ -137,13 +263,14 @@ export function AuthPage({ initialMode = "login" }: { initialMode?: AuthMode }) 
                   ) : null}
 
                   <label className={styles.field}>
-                    <span className={styles.srOnly}>Email</span>
+                    <span className={styles.srOnly}>{admin ? "Admin email" : "Email"}</span>
                     <input
                       type="email"
                       required
                       value={email}
                       onChange={(event) => setEmail(event.target.value)}
-                      placeholder="Enter your email"
+                      placeholder={admin ? "Enter admin email" : "Enter your email"}
+                      autoComplete={admin ? "username" : "email"}
                     />
                     <Mail size={18} aria-hidden="true" />
                   </label>
@@ -156,6 +283,7 @@ export function AuthPage({ initialMode = "login" }: { initialMode?: AuthMode }) 
                       value={password}
                       onChange={(event) => setPassword(event.target.value)}
                       placeholder={isSignup ? "Create your password" : "Enter your password"}
+                      autoComplete={admin ? "current-password" : isSignup ? "new-password" : "current-password"}
                     />
                     <Eye size={18} aria-hidden="true" />
                   </label>
@@ -180,6 +308,14 @@ export function AuthPage({ initialMode = "login" }: { initialMode?: AuthMode }) 
                         );
                       })}
                     </div>
+                  ) : admin ? (
+                    <div className={styles.formMeta}>
+                      <span className={styles.remember}>
+                        <input type="checkbox" checked readOnly />
+                        <span>Protected admin session</span>
+                      </span>
+                      <Link href="/">Back to site</Link>
+                    </div>
                   ) : (
                     <div className={styles.formMeta}>
                       <label className={styles.remember}>
@@ -195,11 +331,13 @@ export function AuthPage({ initialMode = "login" }: { initialMode?: AuthMode }) 
                   )}
 
                   <button className={styles.loginButton} type="submit">
-                    {isSignup ? "Create account" : "Login"}
+                    {admin ? "Open admin panel" : isSignup ? "Create account" : "Login"}
                   </button>
 
                   <p className={styles.demoNote}>
-                    Demo mode: use any details to open the Land Travel portal.
+                    {admin
+                      ? "Use your Supabase admin account credentials."
+                      : "Account verification may be required depending on Supabase settings."}
                   </p>
                 </motion.form>
               ) : (
