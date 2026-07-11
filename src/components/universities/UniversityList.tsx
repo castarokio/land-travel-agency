@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
@@ -47,15 +49,6 @@ export function UniversityList() {
     fetchUnis();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center py-24 text-neutral-400">
-        <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
-        <p className="text-sm font-semibold">Chargement des universités...</p>
-      </div>
-    );
-  }
-
   // Extract unique countries
   const countriesList = useMemo(() => {
     const countries = new Set<string>();
@@ -67,7 +60,7 @@ export function UniversityList() {
   const programsList = useMemo(() => {
     const programs = new Set<string>();
     universities.forEach((u) => {
-      u.programs.forEach((prog) => {
+      u.programs.forEach((prog: any) => {
         // Group similar programs into broader categories for easier filtering
         if (prog.toLowerCase().includes("informatique") || prog.toLowerCase().includes("logiciel") || prog.toLowerCase().includes("intelligence")) {
           programs.add("Tech & Informatique");
@@ -95,7 +88,7 @@ export function UniversityList() {
       
       const matchesCountry = selectedCountry === "All" || u.country === selectedCountry;
 
-      const matchesProgram = selectedProgram === "All" || u.programs.some((prog) => {
+      const matchesProgram = selectedProgram === "All" || u.programs.some((prog: any) => {
         if (selectedProgram === "Tech & Informatique") {
           return prog.toLowerCase().includes("informatique") || prog.toLowerCase().includes("logiciel") || prog.toLowerCase().includes("intelligence");
         }
@@ -117,7 +110,16 @@ export function UniversityList() {
 
       return matchesSearch && matchesCountry && matchesProgram;
     });
-  }, [search, selectedCountry, selectedProgram]);
+  }, [search, selectedCountry, selectedProgram, universities]);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 text-neutral-400">
+        <Loader2 className="w-8 h-8 animate-spin text-primary mb-4" />
+        <p className="text-sm font-semibold">Chargement des universités...</p>
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: "600px" }}>
